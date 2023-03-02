@@ -1,7 +1,8 @@
-package com.wevioo.cantine.services;
+package com.wevioo.cantine.services.impl;
 
 import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.repositories.UserRepository;
+import com.wevioo.cantine.services.IUserManagement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

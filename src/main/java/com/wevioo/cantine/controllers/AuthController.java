@@ -1,6 +1,5 @@
 package com.wevioo.cantine.controllers;
 
-import com.wevioo.cantine.entities.PasswordResetToken;
 import com.wevioo.cantine.entities.Role;
 import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.enums.enumRole;
@@ -14,19 +13,15 @@ import com.wevioo.cantine.security.payloads.response.MessageResponse;
 import com.wevioo.cantine.security.services.UserDetailsImpl;
 import com.wevioo.cantine.security.services.UserDetailsServiceImpl;
 import com.wevioo.cantine.services.EmailService;
-import com.wevioo.cantine.services.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserManagementController {
