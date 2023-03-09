@@ -5,7 +5,9 @@ import com.wevioo.cantine.entities.User;
 import java.util.List;
 
 public interface IUserManagement {
-    public List<User> getAllUsers();
-    public User updateUserRole(Long idUser, User newUser);
-    public void deleteUser(Long idUser);
+    List<User> getAllUsers();
+
+    User updateUserRole(Long idUser, Integer idRole);
+
+    void deleteUser(Long idUser);
 }

@@ -1,12 +1,18 @@
 package com.wevioo.cantine.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
@@ -36,9 +42,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
-    }
-
     public User(String username, String email, String password, String firstname, String lastname) {
         this.username = username;
         this.email = email;
@@ -47,7 +50,7 @@ public class User {
         this.lastname = lastname;
     }
 
-    public Long getId() {
+   /* public Long getId() {
         return id;
     }
 
@@ -85,5 +88,5 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
+    }*/
 }

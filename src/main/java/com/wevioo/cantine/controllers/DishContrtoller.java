@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/staff/dish")
-@PreAuthorize("hasRole('ROLE_STAFF')")
+//@PreAuthorize("hasRole('ROLE_STAFF')")
 public class DishContrtoller {
     @Autowired
     IDishService iDishService;
