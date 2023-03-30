@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,11 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
-        })
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +23,7 @@ public class User {
 
     private String username;
 
-    private String email;
+   // private String email;
 
     private String password;
 
@@ -36,15 +33,21 @@ public class User {
     @Column(name = "last_name")
     private  String lastname;
 
+    @Column(name = "resetToken")
+    private String resetToken;
+
+    @Column(name = "resetTokenExpiration")
+    private LocalDateTime resetTokenExpiration;
+
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles",
+    @JoinTable(  name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String email, String password, String firstname, String lastname) {
+    public User(String username/*, String email*/, String password, String firstname, String lastname) {
         this.username = username;
-        this.email = email;
+        //this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;

@@ -33,12 +33,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
-    @Transactional
+  /*  @Transactional
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException{
         User user = userRepository.findByEmail(email);
 
         return UserDetailsImpl.build(user);
-    }
+    }*/
 
     /*public void createPasswordResetToken(User user, String token){
         PasswordResetToken pwd = new PasswordResetToken(user,token);

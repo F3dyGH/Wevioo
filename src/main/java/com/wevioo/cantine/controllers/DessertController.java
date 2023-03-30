@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/staff/dessert")
-@PreAuthorize("hasRole('ROLE_STAFF')")
+//@PreAuthorize("hasRole('ROLE_STAFF')")
 public class DessertController {
     @Autowired
     IDessertService iDessertService;

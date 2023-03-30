@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,8 +30,15 @@ public class Dish {
     @Column(name = "description")
     private String description;
 
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_id")
     private Menu menu;
+
+    @ManyToMany
+    @JoinTable(name = "dish_images",
+            joinColumns = @JoinColumn(name = "dish_id"),
+            inverseJoinColumns = @JoinColumn(name = "images_id"))
+    private Set<FileDB> images = new LinkedHashSet<>();
 
 }

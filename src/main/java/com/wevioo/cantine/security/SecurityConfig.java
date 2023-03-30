@@ -57,8 +57,10 @@ public class SecurityConfig {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/auth/**").permitAll();
-                //.anyRequest().authenticated();
+                .authorizeRequests().antMatchers("/auth/**").permitAll().and()
+                .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")/*.and()
+                .authorizeRequests().antMatchers("/staff/**").hasRole("STAFF")
+                .anyRequest().authenticated()*/;
 
         http.authenticationProvider(authenticationProvider());
 

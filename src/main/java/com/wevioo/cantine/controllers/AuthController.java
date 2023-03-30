@@ -68,7 +68,7 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getEmail(),
+                /*userDetails.getEmail(),*/
                 roles));
     }
 
@@ -80,14 +80,14 @@ public class AuthController {
                     .body(new MessageResponse("Error: Username exists already!"));
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        /*if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email exists already!"));
-        }
+        }*/
 
         User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
+                /*signUpRequest.getEmail(),*/
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getFirstname(), signUpRequest.getLastname() );
 
         Set<String> strRoles = signUpRequest.getRole();
