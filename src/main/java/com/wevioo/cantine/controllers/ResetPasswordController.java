@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,47 +31,12 @@ public class ResetPasswordController {
     @Autowired
     IUserService userService;
 
-    /*@PostMapping("/forget-password")
-    public ResponseEntity<?> resetPassword(@RequestBody String email) {
-        User user = passwordResetService.findByEmail(email);
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String token = jwtUtils.generatePasswordResetToken(user);
-        passwordResetService.createPasswordResetTokenForUser(user, token);
-
-        // Send email with password reset link
-        String resetUrl = "http://localhost:8082/reset-password?token=" + token;
-        String body = "To reset your password, click the link below:\n" + resetUrl;
-        try {
-            emailService.sendEmail(user.getEmail(), "Password reset", body);
-        }catch (MessagingException e){
-            return ResponseEntity.badRequest().body(e);
-        }
-        return ResponseEntity.ok().build();
-    }
-*/
-    /*@PostMapping("/confirm")
-    public ResponseEntity<?> confirmPasswordReset(@RequestParam String token, @RequestParam String newPassword) {
-        PasswordResetToken resetToken = passwordResetService.getPasswordResetToken(token);
-        if (resetToken == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        User user = resetToken.getUser();
-        if (jwtUtils.validatePasswordResetToken(token, user)) {
-            passwordResetService.changeUserPassword(user, newPassword);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }*/
+    private final String TOKEN_URL ="http://localhost:4200/reset-password?token=";
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("/forgot-password/{email}")
-    public ResponseEntity<?> forgotPassword(@PathVariable("email") String email) throws MessagingException {
+    public ResponseEntity<?> forgotPassword(@PathVariable("email") String email) {
         User user = userRepository.findByUsername(email).get();
 
         if (user == null) {
@@ -77,37 +45,29 @@ public class ResetPasswordController {
         try {
             String token = jwtUtils.generatePasswordResetToken(user);
             passwordResetService.createPasswordResetTokenForUser(user,token);
-            String resetUrl = "http://localhost:8082/reset-password?token=" + token;
+            String resetUrl = TOKEN_URL + token;
             String body = "To reset your password, click the link below:\t";
-            emailService.sendEmail(email,"Password reset",  body + resetUrl);
+            emailService.sendEmail(email,"Password reset", resetUrl);
 
-        }catch (MessagingException e) {
+        }catch (MessagingException | IOException e) {
             System.out.println(e);
         }
-        // send email to user with reset password link
-
         return ResponseEntity.ok("Password reset email sent to: " + email);
     }
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam("newPassword") String password ){
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String password ){
         User user = userRepository.findByResetToken(token).get();
         if (user.getResetToken().equals(token) && user.getResetTokenExpiration().isAfter(LocalDateTime.now()) ){
             userService.updatePassword(user,password);
-            return ResponseEntity.ok("Password for" + user.getUsername() + "has been changed successfully");
+            return ResponseEntity.ok("Password for " + user.getUsername() + " has been changed successfully");
         }
-        else {
-            return ResponseEntity.badRequest().build();
+        else if(user.getResetTokenExpiration().toLocalTime().isBefore(LocalTime.now()) || user.getResetTokenExpiration().toLocalDate().isBefore(LocalDate.now()) ) {
+            user.setResetToken(null);
+            user.setResetTokenExpiration(null);
+            userRepository.save(user);
+            return ResponseEntity.badRequest().body("token expired");
+        }else {
+            return ResponseEntity.badRequest().body("token not found");
         }
-    }
-    @GetMapping("/sendmail")
-   public String sendmail(){
-
-        try {
-            emailService.sendEmail("test@example.com", "Test Subject", "Test mail");
-        }catch (MessagingException e){
-            System.out.println("yekhdemch");
-        }
-
-        return "email sent";
     }
 }

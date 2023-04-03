@@ -14,24 +14,14 @@ import java.util.Optional;
 public class PasswordResetService {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-   /* public User findByEmail(String email) extends User {
-        User user = userRepository.findByEmail(email);
-
-        return userRepository.findByEmail(email);
-    }*/
 
     public void createPasswordResetTokenForUser(User user, String token) {
-        /*PasswordResetToken resetToken = new PasswordResetToken(token, user);
-        passwordResetTokenRepository.save(resetToken);*/
+        LocalDateTime linkExpiration = LocalDateTime.now().plusHours(1);
         user.setResetToken(token);
-        user.setResetTokenExpiration(LocalDateTime.now().plusHours(24));
+        user.setResetTokenExpiration(linkExpiration);
         userRepository.save(user);
     }
 
@@ -39,8 +29,4 @@ public class PasswordResetService {
         return userRepository.findByResetToken(token);
     }
 
-    public void changeUserPassword(User user, String newPassword) {
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
 }
