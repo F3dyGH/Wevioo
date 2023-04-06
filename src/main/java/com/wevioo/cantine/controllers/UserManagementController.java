@@ -32,10 +32,10 @@ public class UserManagementController {
         /* ResponseEntity.ok("User Role Updated Successfully");*/
     }
 
-   /* @GetMapping("/find/{id}")
+    @GetMapping("/find/{id}")
     public User findById(@PathVariable Long id){
-        return userManagement.findUserById(id);
-    }*/
+        return userManagement.getUserById(id);
+    }
 
     @DeleteMapping("/delete-user/{id}")
     public void deleteUser(@PathVariable Long id){

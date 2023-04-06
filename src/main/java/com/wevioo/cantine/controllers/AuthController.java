@@ -13,6 +13,8 @@ import com.wevioo.cantine.security.payloads.response.MessageResponse;
 import com.wevioo.cantine.security.services.UserDetailsImpl;
 import com.wevioo.cantine.security.services.UserDetailsServiceImpl;
 import com.wevioo.cantine.services.EmailService;
+import com.wevioo.cantine.services.IUserService;
+import com.wevioo.cantine.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +52,8 @@ public class AuthController {
 
     @Autowired
     EmailService emailService;
+    @Autowired
+    IUserService iUserService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -125,24 +129,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User signed up successfully!"));
     }
-    /*
-    @PostMapping("/resetPassword")
-    public ResponseEntity<?> PasswordReset(HttpServletRequest request, @RequestParam("email") String email){
-        User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new UsernameNotFoundException("User not found");
-        }
-        String token = UUID.randomUUID().toString();
-        userService.createPasswordResetToken(user,token);
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Complete Password Reset!");
-        mailMessage.setFrom("test@gmail.com");
-        mailMessage.setText("To complete the password reset process, please click here: "
-                + "http://localhost:8082/confirm-reset?token="+ token);
-        emailService.sendEmail(mailMessage);
-
-
-        return ResponseEntity.ok(new MessageResponse("Email sent successfully"));
-    }*/
+   @GetMapping("/find/{id}")
+    public User getUserById(@PathVariable("id") Long id){
+        return iUserService.getUserById(id);
+   }
 }

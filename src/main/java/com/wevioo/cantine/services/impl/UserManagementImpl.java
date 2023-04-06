@@ -6,7 +6,6 @@ import com.wevioo.cantine.repositories.RoleRepository;
 import com.wevioo.cantine.repositories.UserRepository;
 import com.wevioo.cantine.services.IUserManagement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,5 +36,10 @@ public class UserManagementImpl implements IUserManagement {
     @Override
     public void deleteUser(Long idUser) {
         ur.deleteById(idUser);
+    }
+
+    @Override
+    public User getUserById(Long id){
+        return ur.findById(id).get();
     }
 }

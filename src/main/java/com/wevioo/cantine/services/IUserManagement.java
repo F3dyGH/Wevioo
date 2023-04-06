@@ -10,4 +10,6 @@ public interface IUserManagement {
     User updateUserRole(Long idUser, Integer idRole);
 
     void deleteUser(Long idUser);
+
+    User getUserById(Long id);
 }
