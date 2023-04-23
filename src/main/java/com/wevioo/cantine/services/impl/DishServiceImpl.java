@@ -23,37 +23,46 @@ public class DishServiceImpl implements IDishService {
     ResourceLoader resourceLoader;
 
     @Override
-    public ResponseEntity<?> createDish(Dish dish, MultipartFile file) throws IOException /*throws IOException*/ {
-        byte[] photoBytes = file.getBytes();
-        dish.setImage(photoBytes);
+    public ResponseEntity<?> createDish(Dish dish, MultipartFile file) throws IOException {
+        if (file != null) {
+            byte[] photoBytes = file.getBytes();
+            dish.setImage(photoBytes);
+        }else{
+            dish.setImage(null);
+        }
         dishRepository.save(dish);
         return ResponseEntity.ok("Dish created Successfully");
     }
-        @Override
-        public Dish updateDish (Long id, Dish newDish){
-            Dish dish = dishRepository.findById(id).orElse(null);
-            if (dish != null) {
-                dish.setDescription(newDish.getDescription());
-                dish.setName(newDish.getName());
-                dish.setPrice(newDish.getPrice());
-                dish.setMenu(newDish.getMenu());
-                return dishRepository.save(dish);
-            } else {
-                return (Dish) ResponseEntity.notFound();
+
+    @Override
+    public Dish updateDish(Long id, Dish newDish, MultipartFile file) throws IOException {
+        Dish dish = dishRepository.findById(id).orElse(null);
+        if (dish != null) {
+            dish.setDescription(newDish.getDescription());
+            dish.setName(newDish.getName());
+            dish.setPrice(newDish.getPrice());
+            if (file != null) {
+                byte[] photoBytes = file.getBytes();
+                dish.setImage(photoBytes);
             }
-        }
-        @Override
-        public Dish retreiveDish (Long idDish){
-            return dishRepository.findById(idDish).orElse(null);
-        }
-
-        @Override
-        public ResponseEntity<?> getAll() {
-            return ResponseEntity.ok().body(dishRepository.findAll());
-        }
-
-        @Override
-        public void deleteDish (Long idDish){
-            dishRepository.deleteById(idDish);
+            return dishRepository.save(dish);
+        } else {
+            return (Dish) ResponseEntity.notFound();
         }
     }
+
+    @Override
+    public Dish retreiveDish(Long idDish) {
+        return dishRepository.findById(idDish).orElse(null);
+    }
+
+    @Override
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok().body(dishRepository.findAll());
+    }
+
+    @Override
+    public void deleteDish(Long idDish) {
+        dishRepository.deleteById(idDish);
+    }
+}
