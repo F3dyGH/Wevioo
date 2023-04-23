@@ -7,7 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DishRepository extends JpaRepository<Dish, Long> {
     Dish findByName(String name);
-
-    Dish findByPhoto(String photo);
-
 }
