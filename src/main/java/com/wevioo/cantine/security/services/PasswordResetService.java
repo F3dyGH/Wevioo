@@ -1,7 +1,6 @@
 package com.wevioo.cantine.security.services;
 
 import com.wevioo.cantine.entities.User;
-import com.wevioo.cantine.repositories.PasswordResetTokenRepository;
 import com.wevioo.cantine.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

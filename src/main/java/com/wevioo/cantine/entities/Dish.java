@@ -25,9 +25,6 @@ public class Dish {
     @Column(name = "price")
     private double price;
 
-  /*  @Column(name = "photo")
-    private String photo;
-*/
     @Column(name = "description")
     private String description;
 
@@ -38,16 +35,5 @@ public class Dish {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-
-   /* @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "dish_images",
-            joinColumns = @JoinColumn(name = "dish_id"),
-            inverseJoinColumns = @JoinColumn(name = "images_id"))
-    private Set<FileDB> images = new LinkedHashSet<>();*/
-
-  /*  @JsonIgnore
-    @OneToMany(mappedBy = "dish")
-    private Set<DishImage> dishImages = new LinkedHashSet<>();*/
 
 }

@@ -8,8 +8,8 @@ public class SignupRequest {
     @NotBlank
     private String username;
 
-    @Email
-    private String email;
+    private String photo;
+    private byte[] image;
 
     private Set<String> role;
 
@@ -26,12 +26,12 @@ public class SignupRequest {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getPassword() {
@@ -64,5 +64,13 @@ public class SignupRequest {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

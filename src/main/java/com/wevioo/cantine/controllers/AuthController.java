@@ -28,7 +28,6 @@ import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -84,14 +83,8 @@ public class AuthController {
                     .body(new MessageResponse("Error: Username exists already!"));
         }
 
-        /*if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email exists already!"));
-        }*/
-
         User user = new User(signUpRequest.getUsername(),
-                /*signUpRequest.getEmail(),*/
+                signUpRequest.getImage(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getFirstname(), signUpRequest.getLastname() );
 
         Set<String> strRoles = signUpRequest.getRole();

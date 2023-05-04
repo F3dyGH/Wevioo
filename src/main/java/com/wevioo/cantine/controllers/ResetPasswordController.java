@@ -1,6 +1,5 @@
 package com.wevioo.cantine.controllers;
 
-import com.wevioo.cantine.entities.PasswordResetToken;
 import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.repositories.UserRepository;
 import com.wevioo.cantine.security.jwt.JwtUtils;

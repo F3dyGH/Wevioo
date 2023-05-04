@@ -13,8 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
-//@CrossOrigin(origins = "http://localhost:8082", maxAge = 3600, allowCredentials = "true")
-//@PreAuthorize("hasRole('ADMIN')")
+
 public class UserManagementController {
     @Autowired
     IUserManagement userManagement;
@@ -29,7 +28,6 @@ public class UserManagementController {
     @PutMapping("/update-role/{id}/roles/{idRole}")
     public User updateRole(@PathVariable Long id , @PathVariable Integer idRole){
         return userManagement.updateUserRole(id, idRole);
-        /* ResponseEntity.ok("User Role Updated Successfully");*/
     }
 
     @GetMapping("/find/{id}")
@@ -40,6 +38,5 @@ public class UserManagementController {
     @DeleteMapping("/delete-user/{id}")
     public void deleteUser(@PathVariable Long id){
         userManagement.deleteUser(id);
-        //return ResponseEntity.ok("User deleted successfully");
     }
 }

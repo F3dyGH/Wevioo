@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     IUserService userService;
     @PutMapping(value ="/update/{id}",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public User updateUser(@ModelAttribute User user, @RequestParam(value = "photo", required = false) MultipartFile file, @PathVariable Long id)  throws IOException{
+    public User updateUser(@ModelAttribute User user, @RequestParam(value = "file", required = false) MultipartFile file, @PathVariable Long id)  throws IOException{
         return userService.updateUser(id, user, file);
     }
     @GetMapping("/photo/{photoName}")
