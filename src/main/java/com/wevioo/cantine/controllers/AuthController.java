@@ -18,6 +18,7 @@ import com.wevioo.cantine.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,12 +68,16 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                /*userDetails.getEmail(),*/
-                roles));
+        if (userDetails.isEnabled()) {
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    /*userDetails.getEmail(),*/
+                    userDetails.isEnabled(),
+                    roles));
+        } else {
+            throw new DisabledException("User is disabled");
+        }
     }
 
     @PostMapping("/signup")
@@ -85,7 +90,7 @@ public class AuthController {
 
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getImage(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getFirstname(), signUpRequest.getLastname() );
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getFirstname(), signUpRequest.getLastname());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -118,12 +123,14 @@ public class AuthController {
         }
 
         user.setRoles(roles);
+        user.setIsEnabled(true);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User signed up successfully!"));
     }
-   @GetMapping("/find/{id}")
-    public User getUserById(@PathVariable("id") Long id){
+
+    @GetMapping("/find/{id}")
+    public User getUserById(@PathVariable("id") Long id) {
         return iUserService.getUserById(id);
-   }
+    }
 }

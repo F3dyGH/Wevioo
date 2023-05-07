@@ -18,9 +18,15 @@ public class UserManagementImpl implements IUserManagement {
     UserRepository ur;
     @Autowired
     RoleRepository rr;
+
     @Override
-    public List<User> getAllUsers() {
-        return ur.findAll();
+    public List<User> getAllEnabledUsers() {
+        return ur.findEnabledUsers();
+    }
+
+    @Override
+    public List<User> getAllDisabledUsers() {
+        return ur.findDisabledUsers();
     }
 
     @Override
@@ -39,7 +45,29 @@ public class UserManagementImpl implements IUserManagement {
     }
 
     @Override
-    public User getUserById(Long id){
+    public User getUserById(Long id) {
         return ur.findById(id).get();
+    }
+
+    @Override
+    public void disableUser(Long userId) {
+        User user = ur.findById(userId).get();
+        if (user != null) {
+            user.setIsEnabled(false);
+            ur.save(user);
+        } else {
+            throw new IllegalArgumentException("User doesn't exist");
+        }
+    }
+
+    @Override
+    public void enableUser(Long userId) {
+        User user = ur.findById(userId).get();
+        if (user != null) {
+            user.setIsEnabled(true);
+            ur.save(user);
+        } else {
+            throw new IllegalArgumentException("User doesn't exist");
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.wevioo.cantine.controllers;
 
-import com.wevioo.cantine.entities.Dish;
 import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,8 @@ public class UserController {
     public User updateUser(@ModelAttribute User user, @RequestParam(value = "file", required = false) MultipartFile file, @PathVariable Long id)  throws IOException{
         return userService.updateUser(id, user, file);
     }
-    @GetMapping("/photo/{photoName}")
+   /* @GetMapping("/photo/{photoName}")
     public ResponseEntity<byte[]> getPhoto(@PathVariable("photoName") String photoName) throws IOException {
         return userService.getPhoto(photoName);
-    }
+    }*/
 }

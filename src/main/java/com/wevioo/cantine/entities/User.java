@@ -38,6 +38,8 @@ public class User {
     @Column(name = "last_name")
     private  String lastname;
 
+
+
     @Column(name = "resetToken")
     private String resetToken;
 
@@ -50,7 +52,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-
+    @Column(name = "is_enabled")
+    private Boolean isEnabled;
 
     public User(String username, byte[] image, String password, String firstname, String lastname) {
         this.username = username;

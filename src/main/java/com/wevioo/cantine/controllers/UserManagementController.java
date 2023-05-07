@@ -18,25 +18,52 @@ public class UserManagementController {
     @Autowired
     IUserManagement userManagement;
 
-    @GetMapping("/all-users")
+    @GetMapping("/enabled-users")
 
-    public ResponseEntity<?> getAllUsers(){
-        List<User> users = userManagement.getAllUsers();
+    public ResponseEntity<?> getAllEnabledUsers() {
+        List<User> users = userManagement.getAllEnabledUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/disabled-users")
+    public ResponseEntity<?> getAllDisabledUsers() {
+        List<User> users = userManagement.getAllDisabledUsers();
         return ResponseEntity.ok(users);
     }
 
     @PutMapping("/update-role/{id}/roles/{idRole}")
-    public User updateRole(@PathVariable Long id , @PathVariable Integer idRole){
+    public User updateRole(@PathVariable Long id, @PathVariable Integer idRole) {
         return userManagement.updateUserRole(id, idRole);
     }
 
     @GetMapping("/find/{id}")
-    public User findById(@PathVariable Long id){
+    public User findById(@PathVariable Long id) {
         return userManagement.getUserById(id);
     }
 
     @DeleteMapping("/delete-user/{id}")
-    public void deleteUser(@PathVariable Long id){
+    public void deleteUser(@PathVariable Long id) {
         userManagement.deleteUser(id);
+    }
+
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/disable/{id}")
+    public ResponseEntity<?> disableUser(@PathVariable Long id) {
+        try {
+            userManagement.disableUser(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<?> enableUser(@PathVariable Long id) {
+        try {
+            userManagement.enableUser(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

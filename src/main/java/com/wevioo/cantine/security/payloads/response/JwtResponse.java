@@ -1,5 +1,7 @@
 package com.wevioo.cantine.security.payloads.response;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.List;
 
 public class JwtResponse {
@@ -7,15 +9,24 @@ public class JwtResponse {
     private String type = "Bearer ";
     private Long id;
     private String username;
-    private String email;
+
+    private Boolean isEnabled;
     private List<String> roles;
 
-    public JwtResponse(String accessToken, Long id, String username,/* String email,*/ List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String username, Boolean isEnabled, List<String> roles) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
-//        this.email = email;
+        this.isEnabled = isEnabled;
         this.roles = roles;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
     }
 
     public String getAccessToken() {
