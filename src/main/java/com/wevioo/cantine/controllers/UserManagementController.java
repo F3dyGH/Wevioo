@@ -4,11 +4,8 @@ import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.services.IUserManagement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -46,7 +43,6 @@ public class UserManagementController {
         userManagement.deleteUser(id);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/disable/{id}")
     public ResponseEntity<?> disableUser(@PathVariable Long id) {
         try {
