@@ -8,11 +8,10 @@ import java.io.IOException;
 
 public interface IUserService {
     void updatePassword(User user, String password);
+
     User getUserById(Long id);
 
     User updateUser(Long id, User newUser, MultipartFile file) throws IOException;
 
-    String uploadPhoto(Long id, MultipartFile file) throws IOException;
-
-    ResponseEntity<byte[]> getPhoto(String photoName) throws IOException;
+    User updateAdminPassword(Long id, String password);
 }

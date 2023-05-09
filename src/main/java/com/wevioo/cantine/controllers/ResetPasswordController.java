@@ -54,7 +54,7 @@ public class ResetPasswordController {
         return ResponseEntity.ok("Password reset email sent to: " + email);
     }
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String password ){
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String password){
         User user = userRepository.findByResetToken(token).get();
         if (user.getResetToken().equals(token) && user.getResetTokenExpiration().isAfter(LocalDateTime.now()) ){
             userService.updatePassword(user,password);

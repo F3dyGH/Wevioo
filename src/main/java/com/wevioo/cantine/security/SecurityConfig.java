@@ -27,9 +27,6 @@ public class SecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    /*@Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;*/
-
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -62,8 +59,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/auth/**").permitAll().and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").and()
-                .authorizeRequests().antMatchers("/staff/**").hasRole("STAFF").and()
-                .authorizeRequests().antMatchers("/user/**").hasRole("USER")
+                .authorizeRequests().antMatchers("/staff/**").hasRole("STAFF")/*.and()
+                .authorizeRequests().antMatchers("/user/**").hasRole("USER")*/
                 .anyRequest().authenticated();
         http.authenticationProvider(authenticationProvider());
 
