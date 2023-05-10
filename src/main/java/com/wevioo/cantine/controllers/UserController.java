@@ -27,6 +27,4 @@ public class UserController {
         userService.updateAdminPassword(id,password);
         return ResponseEntity.ok().build();
     }
-
-
 }
