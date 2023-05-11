@@ -1,8 +1,11 @@
 package com.wevioo.cantine.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,18 +23,17 @@ public class Menu {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    @ManyToMany
+    @JoinTable(name = "menu_dishes",
+            joinColumns = @JoinColumn(name = "menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "dishes_id"))
     private List<Dish> dishes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations = new ArrayList<>();
-
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "dessert_id")
-    private Dessert dessert;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date")
-    private Date date;
-
 }
+
