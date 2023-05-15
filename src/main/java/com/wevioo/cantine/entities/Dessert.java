@@ -21,12 +21,13 @@ public class Dessert {
     private String name;
 
     @Column(name = "price")
-    private Float price;
-
-    @Column(name = "photo")
-    private String photo;
+    private double price;
 
     @Column(name = "description")
     private String description;
+
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
 
 }

@@ -1,19 +1,22 @@
 package com.wevioo.cantine.services.impl;
 
 import com.wevioo.cantine.entities.Dessert;
+import com.wevioo.cantine.entities.Starter;
 import com.wevioo.cantine.repositories.DessertRepository;
 import com.wevioo.cantine.services.IDessertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public class DessertServiceImpl implements IDessertService {
     @Autowired
     DessertRepository dessertRepository;
-    @Override
+  /*  @Override
     public Dessert addDessert(Dessert dessert) {
         return dessertRepository.save(dessert);
     }
@@ -30,10 +33,40 @@ public class DessertServiceImpl implements IDessertService {
         }else {
             return (Dessert) ResponseEntity.notFound();
         }
+    }*/
+
+    @Override
+    public ResponseEntity<?> createDessert(Dessert dessert, MultipartFile file) throws IOException {
+        if (file != null) {
+            byte[] photoBytes = file.getBytes();
+            dessert.setImage(photoBytes);
+        }else{
+            dessert.setImage(null);
+        }
+        dessertRepository.save(dessert);
+        return ResponseEntity.ok("Dessert created Successfully");
+
     }
 
     @Override
-    public List<Dessert> retreiveAll() {
+    public Dessert updateDessert(Long id, Dessert newDessert, MultipartFile file) throws IOException {
+        Dessert dessert = dessertRepository.findById(id).orElse(null);
+        if (dessert != null) {
+            dessert.setDescription(newDessert.getDescription());
+            dessert.setName(newDessert.getName());
+            dessert.setPrice(newDessert.getPrice());
+            if (file != null) {
+                byte[] photoBytes = file.getBytes();
+                dessert.setImage(photoBytes);
+            }
+            return dessertRepository.save(dessert);
+        } else {
+            return (Dessert) ResponseEntity.notFound();
+        }
+    }
+
+    @Override
+    public List<Dessert> getAll() {
         return dessertRepository.findAll();
     }
 
