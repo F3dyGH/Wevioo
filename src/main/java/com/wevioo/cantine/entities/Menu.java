@@ -1,13 +1,10 @@
 package com.wevioo.cantine.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,11 +26,20 @@ public class Menu {
     @Column(name = "date")
     private LocalDate date;
 
-    @ManyToMany
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "dessert_id")
+    private Dessert dessert;
+
+/*  @ManyToMany
     @JoinTable(name = "menu_dishes",
             joinColumns = @JoinColumn(name = "menu_id"),
             inverseJoinColumns = @JoinColumn(name = "dishes_id"))
-    private List<Dish> dishes = new ArrayList<>();
+    private List<Starter> starters = new ArrayList<>();*/
+
 
 }
 
