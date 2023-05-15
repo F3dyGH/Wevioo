@@ -31,6 +31,7 @@ public class Dish {
     @Column(name = "image")
     private byte[] image;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "dishes")
     private List<Menu> menus = new ArrayList<>();
 

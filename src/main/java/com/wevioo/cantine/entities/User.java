@@ -38,8 +38,6 @@ public class User {
     @Column(name = "last_name")
     private  String lastname;
 
-
-
     @Column(name = "resetToken")
     private String resetToken;
 
