@@ -11,7 +11,7 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "dish")
+@Table(name = "starter")
 public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
