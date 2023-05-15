@@ -1,18 +1,21 @@
 package com.wevioo.cantine.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "starter")
-public class Dish {
+public class Starter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -31,8 +34,8 @@ public class Dish {
     @Column(name = "image")
     private byte[] image;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "dishes")
-    private List<Menu> menus = new ArrayList<>();
+   /* @JsonIgnore
+    @ManyToMany(mappedBy = "starters")
+    private List<Menu> menus = new ArrayList<>();*/
 
 }

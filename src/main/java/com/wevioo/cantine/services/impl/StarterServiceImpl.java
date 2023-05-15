@@ -1,68 +1,62 @@
 package com.wevioo.cantine.services.impl;
 
-import com.wevioo.cantine.entities.Dish;
-import com.wevioo.cantine.repositories.DishRepository;
-import com.wevioo.cantine.services.IDishService;
+import com.wevioo.cantine.entities.Starter;
+import com.wevioo.cantine.repositories.StarterRepository;
+import com.wevioo.cantine.services.IStarterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 
 @Service
-public class DishServiceImpl implements IDishService {
+public class StarterServiceImpl implements IStarterService {
 
     @Autowired
-    DishRepository dishRepository;
-    @Autowired
-    ServletContext servletContext;
-    @Autowired
-    ResourceLoader resourceLoader;
+    StarterRepository starterRepository;
 
     @Override
-    public ResponseEntity<?> createDish(Dish dish, MultipartFile file) throws IOException {
+    public ResponseEntity<?> createDish(Starter starter, MultipartFile file) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
-            dish.setImage(photoBytes);
+            starter.setImage(photoBytes);
         }else{
-            dish.setImage(null);
+            starter.setImage(null);
         }
-        dishRepository.save(dish);
-        return ResponseEntity.ok("Dish created Successfully");
+        starterRepository.save(starter);
+        return ResponseEntity.ok("Starter created Successfully");
     }
 
     @Override
-    public Dish updateDish(Long id, Dish newDish, MultipartFile file) throws IOException {
-        Dish dish = dishRepository.findById(id).orElse(null);
-        if (dish != null) {
-            dish.setDescription(newDish.getDescription());
-            dish.setName(newDish.getName());
-            dish.setPrice(newDish.getPrice());
+    public Starter updateDish(Long id, Starter newStarter, MultipartFile file) throws IOException {
+        Starter starter = starterRepository.findById(id).orElse(null);
+        if (starter != null) {
+            starter.setDescription(newStarter.getDescription());
+            starter.setName(newStarter.getName());
+            starter.setPrice(newStarter.getPrice());
             if (file != null) {
                 byte[] photoBytes = file.getBytes();
-                dish.setImage(photoBytes);
+                starter.setImage(photoBytes);
             }
-            return dishRepository.save(dish);
+            return starterRepository.save(starter);
         } else {
-            return (Dish) ResponseEntity.notFound();
+            return (Starter) ResponseEntity.notFound();
         }
     }
 
     @Override
-    public Dish retreiveDish(Long idDish) {
-        return dishRepository.findById(idDish).orElse(null);
+    public Starter retreiveDish(Long idDish) {
+        return starterRepository.findById(idDish).orElse(null);
     }
 
     @Override
     public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok().body(dishRepository.findAll());
+        return ResponseEntity.ok().body(starterRepository.findAll());
     }
 
     @Override
     public void deleteDish(Long idDish) {
-        dishRepository.deleteById(idDish);
+        starterRepository.deleteById(idDish);
     }
 }
