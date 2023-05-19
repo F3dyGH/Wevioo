@@ -1,5 +1,6 @@
 package com.wevioo.cantine.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,13 +27,18 @@ public class Menu {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "price")
+    private Double price;
+
     @Lob
     @Column(name = "image")
     private byte[] image;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "dessert_id")
     private Dessert dessert;
+
+
 
 /*  @ManyToMany
     @JoinTable(name = "menu_dishes",

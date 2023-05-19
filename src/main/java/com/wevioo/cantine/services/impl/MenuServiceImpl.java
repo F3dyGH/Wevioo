@@ -1,22 +1,22 @@
 package com.wevioo.cantine.services.impl;
 
+import com.wevioo.cantine.config.LocalDateConverter;
 import com.wevioo.cantine.entities.Dessert;
-import com.wevioo.cantine.entities.Starter;
 import com.wevioo.cantine.entities.Menu;
 import com.wevioo.cantine.repositories.DessertRepository;
 import com.wevioo.cantine.repositories.StarterRepository;
 import com.wevioo.cantine.repositories.MenuRepository;
 import com.wevioo.cantine.services.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MenuServiceImpl implements IMenuService {
@@ -26,36 +26,22 @@ public class MenuServiceImpl implements IMenuService {
     private StarterRepository starterRepository;
     @Autowired
     private DessertRepository dessertRepository;
+    @Autowired
+    private LocalDateConverter localDateConverter;
 
     @Override
-    public ResponseEntity<?> addMenu(Menu menu, MultipartFile file) throws IOException {
-        List<Long> unavailableDishIds = new ArrayList<>();
+    public Menu addMenu(Menu menu, MultipartFile file/*, Long idDessert*/) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             menu.setImage(photoBytes);
         } else {
             menu.setImage(null);
         }
-        /*for (Starter starter : menu.getStarters()) {
-            Optional<Starter> optionalDish = starterRepository.findById(starter.getId());
-            if (!optionalDish.isPresent()) {
-                unavailableDishIds.add(starter.getId());
-            }
-        }
-        if (!unavailableDishIds.isEmpty()) {
-            return ResponseEntity.badRequest().body("The following dishes are unavailable: " + unavailableDishIds.toString());
-        }*/
-        Optional<Dessert> optionalDessert = dessertRepository.findById(menu.getDessert().getId());
-        if (!optionalDessert.isPresent()) {
-            return ResponseEntity.badRequest().body("The following dessert is unavailable: " + optionalDessert.toString());
-        } else {
-            Menu savedMenu = menuRepository.save(menu);
-            // List<Long> savedDishIds = new ArrayList<>();
-        /*for (Starter starter : savedMenu.getStarters()) {
-            savedDishIds.add(starter.getId());
-        }*/
-            return ResponseEntity.ok().body("Menu created successfully with dessert: " + optionalDessert.toString() + " for the " + savedMenu.getDate());
-        }
+
+        Dessert dessert = dessertRepository.findById(menu.getDessert().getId()).get();
+
+        menu.setDessert(dessert);
+        return menuRepository.save(menu);
     }
 
     @Override
@@ -64,19 +50,28 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public Menu updateMenu(Long id, Menu newMenu) {
+    public Menu updateMenu(Long id, Menu newMenu, MultipartFile file) throws IOException {
         Menu menu = menuRepository.findById(id).orElse(null);
-      /*  if (menu != null) {
-            menu.setDate(newMenu.getDate());
-            menu.setStarters(newMenu.getStarters());
-        }*/
+        Dessert dessert = dessertRepository.findById(newMenu.getDessert().getId()).get();
+        if (menu != null) {
+            menu.setName(newMenu.getName());
+            menu.setDate(localDateConverter.convert(newMenu.getDate().toString()));
+            menu.setPrice(newMenu.getPrice());
+            menu.setDessert(dessert);
+        }
+        if (file != null) {
+            byte[] photoBytes = file.getBytes();
+            menu.setImage(photoBytes);
+        } else {
+            menu.setImage(null);
+        }
         return menuRepository.save(menu);
     }
 
     @Override
-    public ResponseEntity<?> getAllMenus() {
+    public List<Menu> getAllMenus() {
          List<Menu> menus = menuRepository.findAll();
-         return ResponseEntity.ok().body(menus);
+         return menus;
     }
 
     @Override
@@ -86,6 +81,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public void deleteMenu(Long idMenu) {
-
+        Menu menu = menuRepository.findById(idMenu).get();
+        menuRepository.delete(menu);
     }
 }

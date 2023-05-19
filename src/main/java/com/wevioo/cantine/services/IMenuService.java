@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IMenuService {
-    ResponseEntity<?> addMenu(Menu menu, MultipartFile file) throws IOException;
+    Menu addMenu(Menu menu, MultipartFile file/*, Long idDessert*/) throws IOException;
     Menu getMenuById(Long id);
-    Menu updateMenu(Long id ,Menu newMenu);
-    ResponseEntity<?> getAllMenus();
+    Menu updateMenu(Long id ,Menu newMenu, MultipartFile file) throws IOException;
+    List<Menu> getAllMenus();
     List<Menu> getAllMenusByDate(LocalDate date);
     void deleteMenu(Long idMenu);
 }
