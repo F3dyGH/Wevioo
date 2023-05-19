@@ -62,8 +62,8 @@ public class MenuServiceImpl implements IMenuService {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             menu.setImage(photoBytes);
-        } else {
-            menu.setImage(null);
+        } else if(file==null){
+            menu.setImage(menu.getImage());
         }
         return menuRepository.save(menu);
     }
