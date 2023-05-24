@@ -4,15 +4,13 @@ import com.wevioo.cantine.config.LocalDateConverter;
 import com.wevioo.cantine.entities.Dessert;
 import com.wevioo.cantine.entities.Menu;
 import com.wevioo.cantine.repositories.DessertRepository;
-import com.wevioo.cantine.repositories.StarterRepository;
 import com.wevioo.cantine.repositories.MenuRepository;
 import com.wevioo.cantine.services.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,8 +20,6 @@ import java.util.List;
 public class MenuServiceImpl implements IMenuService {
     @Autowired
     MenuRepository menuRepository;
-    @Autowired
-    private StarterRepository starterRepository;
     @Autowired
     private DessertRepository dessertRepository;
     @Autowired
@@ -37,11 +33,15 @@ public class MenuServiceImpl implements IMenuService {
         } else {
             menu.setImage(null);
         }
-
+        String menuName = menu.getName();
         Dessert dessert = dessertRepository.findById(menu.getDessert().getId()).get();
 
-        menu.setDessert(dessert);
-        return menuRepository.save(menu);
+        if (isMenuNameUnique(menuName)) {
+            menu.setDessert(dessert);
+            return menuRepository.save(menu);
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Menu exists already");
+        }
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MenuServiceImpl implements IMenuService {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             menu.setImage(photoBytes);
-        } else if(file==null){
+        } else if (file == null) {
             menu.setImage(menu.getImage());
         }
         return menuRepository.save(menu);
@@ -70,8 +70,8 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public List<Menu> getAllMenus() {
-         List<Menu> menus = menuRepository.findAll();
-         return menus;
+        List<Menu> menus = menuRepository.findAll();
+        return menus;
     }
 
     @Override
@@ -80,8 +80,24 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
+    public Menu getMenuByName(String name) {
+        return menuRepository.findByName(name);
+    }
+
+    @Override
     public void deleteMenu(Long idMenu) {
         Menu menu = menuRepository.findById(idMenu).get();
         menuRepository.delete(menu);
+    }
+
+    public boolean isMenuNameUnique(String menuName) {
+        List<Menu> existingMenus = menuRepository.findAll();
+
+        for (Menu menu : existingMenus) {
+            if (menu.getName().equals(menuName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

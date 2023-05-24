@@ -11,4 +11,6 @@ import java.util.List;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findByDate(LocalDate menuDate);
 
+    Menu findByName(String name);
+
 }

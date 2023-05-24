@@ -1,12 +1,9 @@
 package com.wevioo.cantine.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,15 +34,6 @@ public class Menu {
     @OneToOne
     @JoinColumn(name = "dessert_id")
     private Dessert dessert;
-
-
-
-/*  @ManyToMany
-    @JoinTable(name = "menu_dishes",
-            joinColumns = @JoinColumn(name = "menu_id"),
-            inverseJoinColumns = @JoinColumn(name = "dishes_id"))
-    private List<Starter> starters = new ArrayList<>();*/
-
 
 }
 

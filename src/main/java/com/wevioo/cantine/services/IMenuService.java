@@ -14,5 +14,8 @@ public interface IMenuService {
     Menu updateMenu(Long id ,Menu newMenu, MultipartFile file) throws IOException;
     List<Menu> getAllMenus();
     List<Menu> getAllMenusByDate(LocalDate date);
+
+    Menu getMenuByName(String name);
+
     void deleteMenu(Long idMenu);
 }
