@@ -108,7 +108,6 @@
           <manifest>
             <addClasspath>true</addClasspath>
             <classpathPrefix>lib/</classpathPrefix>
-            <mainClass>com.example.MainClass</mainClass>
           </manifest>
         </archive>
       </configuration>
@@ -127,6 +126,11 @@
                   <artifactId>maven-resources-plugin</artifactId>
                   <version>2.7</version>
             </plugin>
+                  <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-clean-plugin</artifactId>
+      <version>2.5</version>
+    </plugin>
         </plugins>
     </build>
 
