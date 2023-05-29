@@ -1,38 +1,41 @@
 pipeline {
     agent any
 
-    stages{
-        stage('Git'){
+    stages {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url:'https://github.com/F3dyGH/Wevioo.git',
-                credentialsId : 'GitPwd'
-            }
-        }
-        stage('Maven Package'){
-            steps {
-                 sh " mvn -version "
-                 sh " java -version "
-                 sh " mvn package -e "
+                // Checkout your source code from version control
+                // Replace the URL and credentials with your own
+                git 'https://github.com/your-repo.git'
             }
         }
 
-        stage("Maven Clean"){
+        stage('Build') {
             steps {
-                sh " mvn clean -e "
+                // Set up JDK
+                // Replace 'jdk8' with your desired JDK version
+                tools {
+                    jdk 'jdk8'
+                }
+                
+                // Build your Maven project
+                sh 'mvn clean install'
             }
         }
 
-        stage("Maven Compile"){
+        stage('Test') {
             steps {
-                sh " mvn compile -e "
+                // Run tests
+                sh 'mvn test'
             }
         }
 
-        stage("Maven Install"){
+        stage('Package') {
             steps {
-                sh " mvn install "
+                // Package the application
+                sh 'mvn package'
             }
         }
-
+        }
     }
 }
