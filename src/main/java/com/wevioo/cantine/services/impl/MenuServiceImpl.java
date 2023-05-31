@@ -26,7 +26,7 @@ public class MenuServiceImpl implements IMenuService {
     private LocalDateConverter localDateConverter;
 
     @Override
-    public Menu addMenu(Menu menu, MultipartFile file/*, Long idDessert*/) throws IOException {
+    public Menu addMenu(Menu menu, MultipartFile file) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             menu.setImage(photoBytes);
@@ -34,7 +34,7 @@ public class MenuServiceImpl implements IMenuService {
             menu.setImage(null);
         }
         String menuName = menu.getName();
-        Dessert dessert = dessertRepository.findById(menu.getDessert().getId()).get();
+        Dessert dessert = dessertRepository.findById(menu.getDessert().getId()).orElse(null);
 
         if (isMenuNameUnique(menuName)) {
             menu.setDessert(dessert);
@@ -46,14 +46,14 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public Menu getMenuById(Long id) {
-        return menuRepository.findById(id).get();
+        return menuRepository.findById(id).orElse(null);
     }
 
     @Override
     public Menu updateMenu(Long id, Menu newMenu, MultipartFile file) throws IOException {
         Menu menu = menuRepository.findById(id).orElse(null);
-        Dessert dessert = dessertRepository.findById(newMenu.getDessert().getId()).get();
-        if (menu != null) {
+        Dessert dessert = dessertRepository.findById(newMenu.getDessert().getId()).orElse(null);
+        if (menu != null && dessert!= null) {
             menu.setName(newMenu.getName());
             menu.setDate(localDateConverter.convert(newMenu.getDate().toString()));
             menu.setPrice(newMenu.getPrice());
@@ -70,8 +70,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public List<Menu> getAllMenus() {
-        List<Menu> menus = menuRepository.findAll();
-        return menus;
+        return menuRepository.findAll();
     }
 
     @Override
@@ -86,7 +85,7 @@ public class MenuServiceImpl implements IMenuService {
 
     @Override
     public void deleteMenu(Long idMenu) {
-        Menu menu = menuRepository.findById(idMenu).get();
+        Menu menu = menuRepository.findById(idMenu).orElse(null);
         menuRepository.delete(menu);
     }
 
