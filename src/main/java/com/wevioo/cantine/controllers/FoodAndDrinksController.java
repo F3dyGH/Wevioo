@@ -45,12 +45,12 @@ public class FoodAndDrinksController {
     @GetMapping("/{category}")
      public ResponseEntity<List<FoodAndDrinks>> getByCategory(@PathVariable("category") Categories categories){
         List<FoodAndDrinks> category = foodAndDrinksService.getByCategory(categories);
-        return ResponseEntity.status(HttpStatus.FOUND).body(category);
+        return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
         foodAndDrinksService.Delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted row with id: "+ id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
