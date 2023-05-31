@@ -5,7 +5,7 @@ pipeline {
         stage('Git'){
             steps {
                 git branch: 'main', url:'https://github.com/F3dyGH/Wevioo.git',
-                credentialsId : 'GitPwd'
+                credentialsId : 'password'
             }
         }
         stage('Maven Package'){
