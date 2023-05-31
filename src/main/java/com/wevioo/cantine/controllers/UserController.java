@@ -1,7 +1,10 @@
 package com.wevioo.cantine.controllers;
 
+import com.wevioo.cantine.entities.FoodAndDrinks;
 import com.wevioo.cantine.entities.Menu;
 import com.wevioo.cantine.entities.User;
+import com.wevioo.cantine.enums.Categories;
+import com.wevioo.cantine.services.IFoodAndDrinksService;
 import com.wevioo.cantine.services.IMenuService;
 import com.wevioo.cantine.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class UserController {
 
     @Autowired
     IMenuService menuService;
+
+    @Autowired
+    IFoodAndDrinksService foodAndDrinksService;
 
     @PreAuthorize("hasRole('USER')")
     @PutMapping(value ="/update/{id}",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -58,5 +64,11 @@ public class UserController {
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/{category}")
+    public ResponseEntity<List<FoodAndDrinks>> getByCategory(@PathVariable("category") Categories categories){
+        List<FoodAndDrinks> category = foodAndDrinksService.getByCategory(categories);
+        return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 }
