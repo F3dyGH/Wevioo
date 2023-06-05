@@ -83,6 +83,11 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
         return foodAndDrinksRepository.findByCategory(categories);
     }
 
+    @Override
+    public FoodAndDrinks getByName(String name) {
+        return foodAndDrinksRepository.findByName(name);
+    }
+
     public boolean isFoodOrDrinkNameUnique(String name) {
         List<FoodAndDrinks> existingData = foodAndDrinksRepository.findAll();
 

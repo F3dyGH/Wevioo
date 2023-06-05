@@ -1,9 +1,10 @@
 package com.wevioo.cantine.entities;
 
+import com.wevioo.cantine.enums.ReservationStatus;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name = "reservation")
-public class Reservation {
+public class DailyMenuReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,8 +27,11 @@ public class Reservation {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
-    private Date date;
+    private LocalDateTime date;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reservation_status")
+    private ReservationStatus reservationStatus;
 
 }

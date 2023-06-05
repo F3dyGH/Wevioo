@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -39,11 +41,11 @@ public class UserController {
     }
     @PreAuthorize("hasRole('ADMIN')" + " || hasRole('USER')" + "|| hasRole('STAFF')")
     @PutMapping("/changePassword/{id}")
-    public ResponseEntity<?> updateUser(@RequestParam String password, @PathVariable Long id) {
+    public ResponseEntity<User> updateUser(@RequestParam String password, @PathVariable Long id) {
         userService.updateAdminPassword(id,password);
         return ResponseEntity.ok().build();
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')" + " || hasRole('USER')" + "|| hasRole('STAFF')")
     @GetMapping("/menus/{date}")
     public ResponseEntity<List<Menu>> getMenusByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         List<Menu> menusByDate = menuService.getAllMenusByDate(date);
@@ -54,7 +56,22 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')" + " || hasRole('USER')" + "|| hasRole('STAFF')")
+    @GetMapping("/menus/daily")
+    public ResponseEntity<List<Menu>> getDailyMenu(){
+        LocalTime currentTime = LocalTime.now();
+
+        if (currentTime.isBefore(LocalTime.of(18, 0))) {
+            LocalDate today = LocalDate.now(ZoneId.of("Africa/Tunis"));
+            List<Menu> menus = menuService.getAllMenusByDate(today);
+            return ResponseEntity.ok(menus);
+        } else {
+            LocalDate tomorrow = LocalDate.now(ZoneId.of("Africa/Tunis")).plusDays(1);
+            List<Menu> menus = menuService.getAllMenusByDate(tomorrow);
+            return ResponseEntity.ok( menus);
+        }
+    }
+    @PreAuthorize("hasRole('USER')" + "|| hasRole('STAFF')" + "|| hasRole('ADMIN')")
     @GetMapping("/menu/{name}")
     public ResponseEntity<Menu> getMenuByName(@PathVariable("name") String name){
         Menu menu = menuService.getMenuByName(name);
@@ -65,7 +82,24 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')" + "|| hasRole('STAFF')" + "|| hasRole('ADMIN')")
+    @GetMapping("/menu/tomorrow")
+    public ResponseEntity<List<Menu>> getMenusForTomorrow() {
+        List<Menu> menus = menuService.getMenusForTomorrow();
+        return ResponseEntity.ok(menus);
+    }
+    @PreAuthorize("hasRole('USER')" + "|| hasRole('STAFF')" + "|| hasRole('ADMIN')")
+    @GetMapping("/foodDrinks/{name}")
+    public ResponseEntity<FoodAndDrinks> getByName(@PathVariable("name") String name){
+        FoodAndDrinks foodAndDrinks = foodAndDrinksService.getByName(name);
+        if(foodAndDrinks!=null){
+            return ResponseEntity.ok().body(foodAndDrinks);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')" + " || hasRole('USER')" + "|| hasRole('STAFF')")
     @GetMapping("/{category}")
     public ResponseEntity<List<FoodAndDrinks>> getByCategory(@PathVariable("category") Categories categories){
         List<FoodAndDrinks> category = foodAndDrinksService.getByCategory(categories);

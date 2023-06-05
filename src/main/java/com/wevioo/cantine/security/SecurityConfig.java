@@ -59,9 +59,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/auth/**").permitAll().and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").and()
-                .authorizeRequests().antMatchers("/staff/**").hasRole("STAFF")/*.and()
+                .authorizeRequests().antMatchers("/staff/**").hasRole("STAFF");/*.and()
                 .authorizeRequests().antMatchers("/user/**").hasRole("USER")*/
-                .anyRequest().authenticated();
+               // .anyRequest().authenticated();
         http.authenticationProvider(authenticationProvider());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

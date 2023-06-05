@@ -22,4 +22,6 @@ public interface IMenuService {
     Menu getMenuByName(String name);
 
     void deleteMenu(Long idMenu);
+
+    List<Menu> getMenusForTomorrow();
 }

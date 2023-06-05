@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -87,6 +88,12 @@ public class MenuServiceImpl implements IMenuService {
     public void deleteMenu(Long idMenu) {
         Menu menu = menuRepository.findById(idMenu).orElse(null);
         menuRepository.delete(menu);
+    }
+
+    @Override
+    public List<Menu> getMenusForTomorrow() {
+        LocalDate tomorrow = LocalDate.now(ZoneId.of("Africa/Tunis")).plusDays(1);
+        return menuRepository.findByDate(tomorrow);
     }
 
     public boolean isMenuNameUnique(String menuName) {

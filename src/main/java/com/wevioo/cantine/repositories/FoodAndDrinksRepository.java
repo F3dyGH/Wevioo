@@ -13,6 +13,9 @@ public interface FoodAndDrinksRepository extends JpaRepository<FoodAndDrinks, Lo
     @Query("SELECT f FROM FoodAndDrinks f WHERE f.categories = :categories ")
     List<FoodAndDrinks> findByCategory(@Param("categories") Categories categories);
 
+    FoodAndDrinks findByName(String name);
+
+
 
 
 }

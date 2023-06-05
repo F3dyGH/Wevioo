@@ -18,5 +18,6 @@ public interface IFoodAndDrinksService {
     void Delete(Long id);
 
     List<FoodAndDrinks> getByCategory(Categories categories);
+    FoodAndDrinks getByName(String name);
 
 }
