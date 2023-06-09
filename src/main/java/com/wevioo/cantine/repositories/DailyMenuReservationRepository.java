@@ -1,6 +1,7 @@
 package com.wevioo.cantine.repositories;
 
 import com.wevioo.cantine.entities.DailyMenuReservation;
+import com.wevioo.cantine.entities.User;
 import com.wevioo.cantine.enums.ReservationStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,13 +22,9 @@ public interface DailyMenuReservationRepository extends JpaRepository<DailyMenuR
 
     List<DailyMenuReservation> findByUserAndDate(Long id, LocalDateTime date);
 
-    @Query("SELECT r FROM DailyMenuReservation r WHERE DATE(r.date) = CURRENT_DATE AND r.reservationStatus = 'IN_PROCESS'")
+    @Query("SELECT r FROM DailyMenuReservation r WHERE DATE(r.date) = CURRENT_DATE ORDER BY r.date DESC ")
     List<DailyMenuReservation> findByTodayDate();
 
-
-
-
-
-
+    boolean existsByUserAndDateBetween(User user, LocalDateTime startDate, LocalDateTime endDate);
 
 }

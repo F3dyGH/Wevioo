@@ -34,4 +34,12 @@ public class DailyMenuReservation {
     @Column(name = "reservation_status")
     private ReservationStatus reservationStatus;
 
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    private User staff;
+
+    @OneToOne
+    @JoinColumn(name = "starter_id")
+    private Starter starter;
+
 }

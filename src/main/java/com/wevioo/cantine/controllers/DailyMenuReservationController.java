@@ -1,23 +1,25 @@
 package com.wevioo.cantine.controllers;
 
 import com.wevioo.cantine.config.LocalDateConverter;
-import com.wevioo.cantine.entities.DailyMenuReservation;
-import com.wevioo.cantine.entities.Menu;
-import com.wevioo.cantine.entities.User;
+import com.wevioo.cantine.entities.*;
 import com.wevioo.cantine.enums.ReservationStatus;
+import com.wevioo.cantine.enums.enumRole;
 import com.wevioo.cantine.repositories.MenuRepository;
+import com.wevioo.cantine.repositories.StarterRepository;
 import com.wevioo.cantine.repositories.UserRepository;
 import com.wevioo.cantine.services.IDailyMenuReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/menuReservation")
@@ -27,6 +29,10 @@ public class DailyMenuReservationController {
     IDailyMenuReservationService dailyMenuReservationService;
     @Autowired
     MenuRepository menuRepository;
+
+    @Autowired
+    StarterRepository starterRepository;
+
     @Autowired
     UserRepository userRepository;
 
@@ -36,15 +42,34 @@ public class DailyMenuReservationController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
-    ResponseEntity<String> create(@RequestParam Long userId, @RequestParam Long menuId) {
+    ResponseEntity<DailyMenuReservation> create(@RequestParam Long userId, @RequestParam Long menuId, @RequestParam Long starterId) {
         User user = userRepository.findById(userId).orElse(null);
         Menu menu = menuRepository.findById(menuId).orElse(null);
-        LocalTime currentTime = LocalTime.now(ZoneId.of("Africa/Tunis"));
-        if (currentTime.isBefore(LocalTime.of(18, 0)) || currentTime.isAfter(LocalTime.of(10, 0))) {
-            return ResponseEntity.badRequest().body("Reservation creation is only allowed between 6 pm and 10 am of the next day.");
+        Starter starter = starterRepository.findById(starterId).orElse(null);
+        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("Africa/Tunis"));
+
+        if (currentTime.getHour() < 18 || currentTime.getHour() >= 10) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
-            dailyMenuReservationService.createReservation(user, menu);
-            return ResponseEntity.ok().body("Reservation Created Successfully");
+            try {
+                boolean hasUserRole = false;
+                Set<Role> userRoles = user.getRoles();
+                for (Role role : userRoles) {
+                    if (role.getName() == enumRole.ROLE_USER) {
+                        hasUserRole = true;
+                        break;
+                    }
+                }
+                if (hasUserRole) {
+                    DailyMenuReservation reservation = dailyMenuReservationService.createReservation(user, menu, starter);
+                    return ResponseEntity.ok().body(reservation);
+                } else {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
         }
     }
 
@@ -55,12 +80,14 @@ public class DailyMenuReservationController {
         return ResponseEntity.ok().body(dailyMenuReservationList);
     }
 
+    @PreAuthorize("hasRole('STAFF')")
     @GetMapping("/{status}")
     ResponseEntity<List<DailyMenuReservation>> status(@PathVariable("status") ReservationStatus reservationStatus) {
         List<DailyMenuReservation> reservationStatusList = dailyMenuReservationService.getByStatus(reservationStatus);
         return ResponseEntity.ok().body(reservationStatusList);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/user/{id}")
     ResponseEntity<List<DailyMenuReservation>> user(@PathVariable("id") Long id) {
         List<DailyMenuReservation> reservationStatusList = dailyMenuReservationService.getByUser(id);
@@ -71,13 +98,26 @@ public class DailyMenuReservationController {
     @GetMapping("/date/{id}")
     ResponseEntity<List<DailyMenuReservation>> userAndDate(@PathVariable("id") Long id, @RequestBody String localDateTime) {
         List<DailyMenuReservation> reservationStatusList = dailyMenuReservationService.getByUserAndDate(id, localDateConverter.date(localDateTime));
-        System.out.println(localDateConverter.date(localDateTime));
         return ResponseEntity.ok().body(reservationStatusList);
     }
 
+    @PreAuthorize("hasRole('STAFF')")
     @GetMapping("/today")
-    ResponseEntity<List<DailyMenuReservation>> TodayDate() {
+    ResponseEntity<List<DailyMenuReservation>> todayDate() {
         List<DailyMenuReservation> reservationStatusList = dailyMenuReservationService.getByTodayDate();
         return ResponseEntity.ok().body(reservationStatusList);
+    }
+
+    @PreAuthorize("hasRole('STAFF')")
+    @PutMapping("/treat/{idReservation}/{idStaff}")
+    ResponseEntity<DailyMenuReservation> treatedReservation(@PathVariable("idReservation") Long reservation, @PathVariable("idStaff") Long staff) {
+        DailyMenuReservation res = dailyMenuReservationService.treatReservation(reservation, staff);
+        return ResponseEntity.ok().body(res);
+    }
+
+    @PutMapping("/cancel/{idReservation}/{idStaff}")
+    ResponseEntity<DailyMenuReservation> cancelReservation(@PathVariable("idReservation") Long reservation, @PathVariable("idStaff") Long staff) {
+        DailyMenuReservation res = dailyMenuReservationService.cancelReservation(reservation, staff);
+        return ResponseEntity.ok().body(res);
     }
 }

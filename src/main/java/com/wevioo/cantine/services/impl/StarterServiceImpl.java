@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class StarterServiceImpl implements IStarterService {
@@ -51,8 +52,8 @@ public class StarterServiceImpl implements IStarterService {
     }
 
     @Override
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok().body(starterRepository.findAll());
+    public List<Starter> getAll() {
+        return starterRepository.findAll();
     }
 
     @Override
