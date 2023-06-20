@@ -16,9 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -48,7 +50,7 @@ public class DailyMenuReservationController {
         Starter starter = starterRepository.findById(starterId).orElse(null);
         LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("Africa/Tunis"));
 
-        if (currentTime.getHour() < 18 || currentTime.getHour() >= 10) {
+        if (currentTime.getHour() < 18 && currentTime.getHour() >= 10) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
             try {
@@ -75,7 +77,6 @@ public class DailyMenuReservationController {
 
     @GetMapping("/all")
     ResponseEntity<List<DailyMenuReservation>> all() {
-
         List<DailyMenuReservation> dailyMenuReservationList = dailyMenuReservationService.getAllDailyMenuReservation();
         return ResponseEntity.ok().body(dailyMenuReservationList);
     }
@@ -92,6 +93,22 @@ public class DailyMenuReservationController {
     ResponseEntity<List<DailyMenuReservation>> user(@PathVariable("id") Long id) {
         List<DailyMenuReservation> reservationStatusList = dailyMenuReservationService.getByUser(id);
         return ResponseEntity.ok().body(reservationStatusList);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/user/today/{userId}")
+    ResponseEntity<List<DailyMenuReservation>> getTodayReservationsForUser(@PathVariable("userId") Long id){
+        List<DailyMenuReservation> todayList = dailyMenuReservationService.getByUserToday(id);
+        return ResponseEntity.ok(todayList);
+    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/user/history/{userId}")
+    ResponseEntity<Map<LocalDate, List<DailyMenuReservation>>> getReservationsHistoryForUser(@PathVariable("userId") Long id){
+        Map<LocalDate, List<DailyMenuReservation>> historyList = dailyMenuReservationService.getReservationsByUserId(id);
+        if(historyList == null ){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(historyList);
     }
 
     /*work on this, fama erreur taa date converter fel postman check it */
@@ -115,9 +132,17 @@ public class DailyMenuReservationController {
         return ResponseEntity.ok().body(res);
     }
 
+@PreAuthorize("hasRole('STAFF') ||" + " hasRole('USER')" )
     @PutMapping("/cancel/{idReservation}/{idStaff}")
     ResponseEntity<DailyMenuReservation> cancelReservation(@PathVariable("idReservation") Long reservation, @PathVariable("idStaff") Long staff) {
         DailyMenuReservation res = dailyMenuReservationService.cancelReservation(reservation, staff);
+        return ResponseEntity.ok().body(res);
+    }
+
+    @PreAuthorize(" hasRole('USER')")
+    @GetMapping("/filter/{id}/{status}")
+    ResponseEntity<Map<LocalDate, List<DailyMenuReservation>>> filterByStatus(@PathVariable("id") Long idUser, @PathVariable String status) {
+        Map<LocalDate, List<DailyMenuReservation>> res = dailyMenuReservationService.userFilterByStatus(idUser, status);
         return ResponseEntity.ok().body(res);
     }
 }

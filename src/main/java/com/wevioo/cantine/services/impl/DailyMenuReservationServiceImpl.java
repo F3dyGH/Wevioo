@@ -1,9 +1,6 @@
 package com.wevioo.cantine.services.impl;
 
-import com.wevioo.cantine.entities.DailyMenuReservation;
-import com.wevioo.cantine.entities.Menu;
-import com.wevioo.cantine.entities.Starter;
-import com.wevioo.cantine.entities.User;
+import com.wevioo.cantine.entities.*;
 import com.wevioo.cantine.enums.ReservationStatus;
 import com.wevioo.cantine.enums.enumRole;
 import com.wevioo.cantine.repositories.DailyMenuReservationRepository;
@@ -12,9 +9,14 @@ import com.wevioo.cantine.services.IDailyMenuReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DailyMenuReservationServiceImpl implements IDailyMenuReservationService {
@@ -24,7 +26,6 @@ public class DailyMenuReservationServiceImpl implements IDailyMenuReservationSer
 
     @Autowired
     private UserRepository userRepository;
-
 
     @Override
     public DailyMenuReservation createReservation(User user, Menu menu, Starter starter) throws IllegalArgumentException {
@@ -67,6 +68,22 @@ public class DailyMenuReservationServiceImpl implements IDailyMenuReservationSer
     }
 
     @Override
+    public Map<LocalDate, List<DailyMenuReservation>> userFilterByStatus(Long id, String reservationStatus) {
+//        return dailyMenuReservationRepository.findByUser_IdAndReservationStatusOrderByDateDesc(id, ReservationStatus.valueOf(reservationStatus));
+        List<DailyMenuReservation> reservations = dailyMenuReservationRepository.findByUser_IdAndReservationStatusOrderByDateDesc(id, ReservationStatus.valueOf(reservationStatus));
+        Map<LocalDate, List<DailyMenuReservation>> filteredReservations = new HashMap<>();
+
+        for (DailyMenuReservation reservation : reservations) {
+            LocalDate date = reservation.getDate().toLocalDate();
+            List<DailyMenuReservation> reservationsForDate = filteredReservations.getOrDefault(date, new ArrayList<>());
+            reservationsForDate.add(reservation);
+            filteredReservations.put(date, reservationsForDate);
+        }
+
+        return filteredReservations;
+    }
+
+    @Override
     public List<DailyMenuReservation> getByUser(Long id) {
         return dailyMenuReservationRepository.findByUser(id);
     }
@@ -87,7 +104,9 @@ public class DailyMenuReservationServiceImpl implements IDailyMenuReservationSer
         DailyMenuReservation reservation = dailyMenuReservationRepository.findById(id).orElse(null);
         reservation.setReservationStatus(ReservationStatus.TREATED);
         reservation.setStaff(staff);
-        return dailyMenuReservationRepository.save(reservation);
+        DailyMenuReservation updatedReservation = dailyMenuReservationRepository.save(reservation);
+
+        return updatedReservation;
     }
 
     @Override
@@ -113,5 +132,29 @@ public class DailyMenuReservationServiceImpl implements IDailyMenuReservationSer
             }
         }
         return false;
+    }
+
+    @Override
+    public List<DailyMenuReservation> getByUserToday(Long id){
+        LocalDate today = LocalDate.now(ZoneId.of("Africa/Tunis"));
+        LocalDateTime startTime = LocalDateTime.of(today, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(today, LocalTime.MAX);
+        User  user = userRepository.findById(id).orElse(null);
+        return dailyMenuReservationRepository.findByUserAndDateBetween(user,startTime,endTime);
+    }
+
+    @Override
+    public Map<LocalDate, List<DailyMenuReservation>> getReservationsByUserId(Long userId) {
+        List<DailyMenuReservation> reservations = dailyMenuReservationRepository.findByUser_Id(userId);
+        Map<LocalDate, List<DailyMenuReservation>> reservationsByDate = new HashMap<>();
+
+        for (DailyMenuReservation reservation : reservations) {
+            LocalDate date = reservation.getDate().toLocalDate();
+            List<DailyMenuReservation> reservationsForDate = reservationsByDate.getOrDefault(date, new ArrayList<>());
+            reservationsForDate.add(reservation);
+            reservationsByDate.put(date, reservationsForDate);
+        }
+
+        return reservationsByDate;
     }
 }
