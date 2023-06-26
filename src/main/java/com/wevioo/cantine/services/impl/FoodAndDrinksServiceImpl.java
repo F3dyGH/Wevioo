@@ -36,6 +36,7 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
             foodAndDrinks.setName(foodAndDrinks.getName());
             foodAndDrinks.setPrice(foodAndDrinks.getPrice());
             foodAndDrinks.setDescription(foodAndDrinks.getDescription());
+            foodAndDrinks.setQuantity(foodAndDrinks.getQuantity());
             foodAndDrinks.setCreationDate(LocalDateTime.now(ZoneId.of("Africa/Tunis")));
             foodAndDrinks.setCategories(foodAndDrinks.getCategories());
 
@@ -48,10 +49,13 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
     @Override
     public FoodAndDrinks update(Long id, FoodAndDrinks foodAndDrinks, MultipartFile file) throws IOException {
         FoodAndDrinks foodAndDrinksNew = foodAndDrinksRepository.findById(id).orElse(null);
-        if(foodAndDrinksNew != null){
+        String name = foodAndDrinks.getName();
+
+        if (isFoodOrDrinkNameUnique(name)) {
 
             foodAndDrinksNew.setModificationDate(LocalDateTime.now(ZoneId.of("Africa/Tunis")));
             foodAndDrinksNew.setDescription(foodAndDrinks.getDescription());
+            foodAndDrinksNew.setQuantity(foodAndDrinks.getQuantity());
             foodAndDrinksNew.setName(foodAndDrinks.getName());
             foodAndDrinksNew.setPrice(foodAndDrinks.getPrice());
             foodAndDrinksNew.setCategories(foodAndDrinks.getCategories());
@@ -63,8 +67,8 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
                 foodAndDrinksNew.setImage(foodAndDrinksNew.getImage());
             }
             return foodAndDrinksRepository.save(foodAndDrinksNew);
-        }else {
-            throw new NullPointerException("Not found");
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Data exists already");
         }
     }
 

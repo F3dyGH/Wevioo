@@ -42,4 +42,7 @@ public class FoodAndDrinks {
     @Column(name = "modification_date")
     private LocalDateTime modificationDate;
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
 }

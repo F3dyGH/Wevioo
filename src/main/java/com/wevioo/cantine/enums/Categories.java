@@ -4,5 +4,5 @@ public enum Categories {
     breakfast,
     sandwiches,
     pizza,
-    drink
+    drinks
 }

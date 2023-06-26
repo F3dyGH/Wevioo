@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
-@Table(name = "reservation")
-public class DailyMenuReservation {
+@Table(name = "reservations")
+public class Reservations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -41,5 +41,9 @@ public class DailyMenuReservation {
     @OneToOne
     @JoinColumn(name = "starter_id")
     private Starter starter;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "food_and_drinks_id")
+    private FoodAndDrinks foodAndDrinks;
 
 }
