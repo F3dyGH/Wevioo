@@ -26,8 +26,11 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     List<Reservations> findByUserAndDate(Long id, LocalDateTime date);
 
-    @Query("SELECT r FROM Reservations r WHERE DATE(r.date) = CURRENT_DATE ORDER BY r.date DESC ")
-    List<Reservations> findByTodayDate();
+   /* @Query("SELECT r FROM Reservations r WHERE DATE(r.date) = CURRENT_DATE ORDER BY r.date DESC ")
+    List<Reservations> findByTodayDate();*/
+   @Query("SELECT r FROM Reservations r WHERE r.date >= :yesterdayHour AND r.date <= :todayMaxHour AND r.reservationStatus = 'IN_PROCESS' ORDER BY r.date DESC")
+   List<Reservations> findReservationsBetweenYesterdayAndToday(LocalDateTime yesterdayHour, LocalDateTime todayMaxHour);
+
 
     boolean existsByUserAndReservationStatusAndDateBetween(User user, ReservationStatus reservationStatus, LocalDateTime dateStart, LocalDateTime dateEnd);
 

@@ -117,7 +117,11 @@ public class ReservationsServiceImpl implements ReservationsService {
 
     @Override
     public List<Reservations> getByTodayDate() {
-        return reservationsRepository.findByTodayDate();
+       // return reservationsRepository.findByTodayDate();
+        LocalDateTime yesterdayHour = LocalDate.now().minusDays(1).atTime(LocalTime.of(18, 0));
+        LocalDateTime todayMaxHour = LocalDate.now().atTime(LocalTime.of(18, 0));
+
+        return reservationsRepository.findReservationsBetweenYesterdayAndToday(yesterdayHour, todayMaxHour);
     }
 
     @Override
