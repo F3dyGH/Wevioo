@@ -187,7 +187,7 @@ public class ReservationsServiceImpl implements ReservationsService {
                 reservationsToday.add(reservation);
             }
         }
-
+        reservationsToday.sort(Comparator.comparing(Reservations::getDate).reversed());
         return reservationsToday;
     }
 
