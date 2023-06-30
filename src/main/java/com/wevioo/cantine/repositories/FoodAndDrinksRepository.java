@@ -5,9 +5,11 @@ import com.wevioo.cantine.enums.Categories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface FoodAndDrinksRepository extends JpaRepository<FoodAndDrinks, Long> {
 
     @Query("SELECT f FROM FoodAndDrinks f WHERE f.categories = :categories ")

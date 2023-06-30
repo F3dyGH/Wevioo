@@ -14,12 +14,9 @@ public interface ReservationsService {
 
         Reservations createFoodAndDrinksReservation(User user, FoodAndDrinks foodAndDrinks) throws IllegalArgumentException;
 
-        //Reservations createBreakfastReservation(User user, Menu menu, Starter starter);
-        List<Reservations> getAllDailyMenuReservation();
-
         List<Reservations> getByStatus(ReservationStatus reservationStatus);
+
         Map<LocalDate, List<Reservations>> userFilterByStatus(Long id, String reservationStatus);
-//        List<Reservations> getByUser(Long id);
 
         List<Reservations> getByUserAndDate(Long id, LocalDateTime date);
 
@@ -35,5 +32,4 @@ public interface ReservationsService {
 
         Map<LocalDate, List<Reservations>> getReservationsByUserId(Long userId);
 
-    Reservations createOtherReservations(User user, FoodAndDrinks item);
 }

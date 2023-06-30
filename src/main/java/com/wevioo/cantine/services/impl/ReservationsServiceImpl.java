@@ -4,8 +4,8 @@ import com.wevioo.cantine.entities.*;
 import com.wevioo.cantine.enums.ReservationStatus;
 import com.wevioo.cantine.enums.enumRole;
 import com.wevioo.cantine.repositories.ReservationsRepository;
-import com.wevioo.cantine.repositories.FoodAndDrinksRepository;
 import com.wevioo.cantine.repositories.UserRepository;
+import com.wevioo.cantine.services.INotificationService;
 import com.wevioo.cantine.services.ReservationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,21 +26,25 @@ public class ReservationsServiceImpl implements ReservationsService {
     private UserRepository userRepository;
 
     @Autowired
-    private FoodAndDrinksRepository foodAndDrinksRepository;
+    INotificationService notificationService;
 
     @Override
     public Reservations createReservation(User user, Menu menu, Starter starter) throws IllegalArgumentException {
 
-        LocalDateTime reservationStartDateTime = menu.getDate().minusDays(1).atTime(18,0);
-        LocalDateTime reservationEndDateTime = menu.getDate().atTime(10,0);
+        LocalDateTime startDateTime = menu.getDate().minusDays(1).atTime(18, 0);
+        LocalDateTime endDateTime = menu.getDate().minusDays(1).atTime(23, 59);
+        LocalDateTime startDateTimeToday = menu.getDate().atTime(0, 0);
+        LocalDateTime endDateTimeToday = menu.getDate().atTime(10, 0);
+        ReservationStatus[] reservationsStatus = {ReservationStatus.IN_PROCESS, ReservationStatus.TREATED};
 
-        boolean hasReservation = reservationsRepository.existsByUserAndDateBetween(user, reservationStartDateTime, reservationEndDateTime);
+        boolean hasReservationYesterday = reservationsRepository.existsByUserAndDateBetweenAndStarterIdIsNotNullAndReservationStatusIn(user, startDateTime, endDateTime, reservationsStatus);
+        boolean hasReservationToday = reservationsRepository.existsByUserAndDateBetweenAndStarterIdIsNotNullAndReservationStatusIn(user, startDateTimeToday, endDateTimeToday, reservationsStatus);
 
-        boolean hasCancelledReservation = reservationsRepository.existsByUserAndReservationStatusAndDateBetween(
+        /*boolean hasCancelledReservation = reservationsRepository.existsByUserAndReservationStatusAndDateBetween(
                 user, ReservationStatus.CANCELLED, reservationStartDateTime, reservationEndDateTime
-        );
+        );*/
 
-        if (hasReservation && !hasCancelledReservation) { //check this method tkhallikech treservi akther men mara fel intervalle mtaa l wakt ama hata ki tfout l wakt twally dima 400 error treservich chouf kifeh tkhallih tkhallik treservi baaed l wakt fel interval
+        if (hasReservationYesterday || hasReservationToday) { //check this method tkhallikech treservi akther men mara fel intervalle mtaa l wakt ama hata ki tfout l wakt twally dima 400 error treservich chouf kifeh tkhallih tkhallik treservi baaed l wakt fel interval
             //ki tcancel commande soit staff soit user rao lezem taawed aandel l ha9 tecmandi akther men mara fel interval taa l wakt
             throw new IllegalArgumentException("Menu reservation is allowed once a day");//update: after trying it still not working, should look for it another time
         }
@@ -56,7 +60,7 @@ public class ReservationsServiceImpl implements ReservationsService {
             reservation.setReservationStatus(ReservationStatus.IN_PROCESS);
             reservation.setStarter(starter);
             reservation.setStaff(null);
-
+            notificationService.addNotificationToStaff(reservation.getUser().getFirstname() + " " + reservation.getUser().getLastname() + " has made a reservation for " + reservation.getMenu().getName());
             return reservationsRepository.save(reservation);
         }
     }
@@ -73,15 +77,9 @@ public class ReservationsServiceImpl implements ReservationsService {
             reservation.setDate(LocalDateTime.now());
             reservation.setReservationStatus(ReservationStatus.IN_PROCESS);
             reservation.setStaff(null);
-
+            notificationService.addNotificationToStaff(reservation.getUser().getFirstname() + " " + reservation.getUser().getLastname() + " has made a reservation for " + reservation.getFoodAndDrinks().getName());
             return reservationsRepository.save(reservation);
         }
-    }
-
-
-    @Override
-    public List<Reservations> getAllDailyMenuReservation() {
-        return reservationsRepository.findAll();
     }
 
     @Override
@@ -91,8 +89,7 @@ public class ReservationsServiceImpl implements ReservationsService {
 
     @Override
     public Map<LocalDate, List<Reservations>> userFilterByStatus(Long id, String reservationStatus) {
-//        return dailyMenuReservationRepository.findByUser_IdAndReservationStatusOrderByDateDesc(id, ReservationStatus.valueOf(reservationStatus));
-        List<Reservations> reservations = reservationsRepository.findByUser_IdAndReservationStatusOrderByDateDesc(id, ReservationStatus.valueOf(reservationStatus));
+        List<Reservations> reservations = reservationsRepository.findByUserIdAndReservationStatusOrderByDateDesc(id, ReservationStatus.valueOf(reservationStatus));
         Map<LocalDate, List<Reservations>> filteredReservations = new HashMap<>();
 
         for (Reservations reservation : reservations) {
@@ -105,11 +102,6 @@ public class ReservationsServiceImpl implements ReservationsService {
         return filteredReservations;
     }
 
-   /* @Override
-    public List<Reservations> getByUser(Long id) {
-        return dailyMenuReservationRepository.findByUser(id);
-    }
-*/
     @Override
     public List<Reservations> getByUserAndDate(Long id, LocalDateTime date) {
         return reservationsRepository.findByUserAndDate(id, date);
@@ -117,12 +109,19 @@ public class ReservationsServiceImpl implements ReservationsService {
 
     @Override
     public List<Reservations> getByTodayDate() {
-       // return reservationsRepository.findByTodayDate();
-        LocalDateTime yesterdayHour = LocalDate.now().minusDays(1).atTime(LocalTime.of(18, 0));
-        LocalDateTime todayMaxHour = LocalDate.now().atTime(LocalTime.of(18, 0));
+        LocalDateTime today = LocalDate.now().atTime(LocalTime.of(0, 0));
+        LocalDateTime today6PM = today.withHour(18).withMinute(0);
+        LocalDateTime tomorrow10AM = today.plusDays(1).withHour(10).withMinute(0);
 
-        return reservationsRepository.findReservationsBetweenYesterdayAndToday(yesterdayHour, todayMaxHour);
+        if (LocalDateTime.now().isBefore(today6PM)) {
+            LocalDateTime yesterday6PM = today.minusDays(1).withHour(18).withMinute(0);
+            LocalDateTime today10AM = today.withHour(10).withMinute(0);
+            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today10AM);
+        } else {
+            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, today6PM, tomorrow10AM);
+        }
     }
+
 
     @Override
     public Reservations treatReservation(Long id, Long staffId) {
@@ -130,6 +129,12 @@ public class ReservationsServiceImpl implements ReservationsService {
         Reservations reservation = reservationsRepository.findById(id).orElse(null);
         reservation.setReservationStatus(ReservationStatus.TREATED);
         reservation.setStaff(staff);
+        if (reservation.getFoodAndDrinks() != null) {
+            notificationService.addNotification("Your Reservation for " + reservation.getFoodAndDrinks().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
+        }
+        if (reservation.getMenu() != null) {
+            notificationService.addNotification("Your Reservation for " + reservation.getMenu().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
+        }
         Reservations updatedReservation = reservationsRepository.save(reservation);
 
         return updatedReservation;
@@ -139,12 +144,24 @@ public class ReservationsServiceImpl implements ReservationsService {
     public Reservations cancelReservation(Long id, Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         Reservations reservation = reservationsRepository.findById(id).orElse(null);
-        reservation.setReservationStatus(ReservationStatus.CANCELLED);
-        if (user.getRoles().contains(enumRole.ROLE_USER)) {
-            reservation.setStaff(null);
-        } else {
+
+        if (user != null && user.getRoles().stream().anyMatch(role -> role.getName() == enumRole.ROLE_STAFF)) {
+            reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservation.setStaff(user);
-        }
+            if (reservation.getFoodAndDrinks() != null) {
+                notificationService.addNotification("Your " + reservation.getFoodAndDrinks().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
+            }
+            if (reservation.getMenu() != null) {
+                notificationService.addNotification("Your " + reservation.getMenu().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
+            }
+        } else {
+            reservation.setReservationStatus(ReservationStatus.CANCELLED);
+            reservation.setStaff(null);
+            /*if (reservation.getFoodAndDrinks() != null) {
+                notificationService.addNotification("Your Reservation has been cancelled", reservation.getUser());
+            }*/
+            }
+
         return reservationsRepository.save(reservation);
     }
 
@@ -159,15 +176,6 @@ public class ReservationsServiceImpl implements ReservationsService {
         }
         return false;
     }
-
-    /*@Override
-    public List<Reservations> getByUserToday(Long id){
-        LocalDate today = LocalDate.now(ZoneId.of("Africa/Tunis"));
-        LocalDateTime startTime = LocalDateTime.of(today, LocalTime.MIN);
-        LocalDateTime endTime = LocalDateTime.of(today, LocalTime.MAX);
-        User user = userRepository.findById(id).orElse(null);
-        return dailyMenuReservationRepository.findByUserAndDateBetween(user,startTime,endTime);
-    }*/
 
     @Override
     public List<Reservations> getByUserToday(Long id) {
@@ -194,7 +202,7 @@ public class ReservationsServiceImpl implements ReservationsService {
 
     @Override
     public Map<LocalDate, List<Reservations>> getReservationsByUserId(Long userId) {
-        List<Reservations> reservations = reservationsRepository.findByUser_Id(userId);
+        List<Reservations> reservations = reservationsRepository.findByUserId(userId);
         Map<LocalDate, List<Reservations>> reservationsByDate = new HashMap<>();
 
         for (Reservations reservation : reservations) {
@@ -207,27 +215,4 @@ public class ReservationsServiceImpl implements ReservationsService {
         return reservationsByDate;
     }
 
-    @Override
-    public Reservations createOtherReservations(User user, FoodAndDrinks item){
-        LocalDateTime reservationTime = LocalDateTime.now(ZoneId.of("Africa/Tunis"));
-       /* Optional<FoodAndDrinks> foodAndDrinksOptional = foodAndDrinksRepository.findById(item.getId());
-        if (foodAndDrinksOptional.isPresent()) {
-            FoodAndDrinks foodAndDrinks = foodAndDrinksOptional.get();
-            int remainingQuantity = foodAndDrinks.getQuantity();
-            if (remainingQuantity > 0) {
-                foodAndDrinks.setQuantity(remainingQuantity - 1);
-                foodAndDrinksRepository.save(foodAndDrinks);
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.badRequest().body("No more available quantity for this item.");
-            }
-        } else {
-            return ResponseEntity.notFound().build();
-        }*/
-        Reservations reservation = new Reservations();
-        reservation.setUser(user);
-        reservation.setFoodAndDrinks(item);
-        reservation.setDate(LocalDateTime.now(ZoneId.of("Africa/Tunis")));
-        return reservationsRepository.save(reservation);
-    }
 }
