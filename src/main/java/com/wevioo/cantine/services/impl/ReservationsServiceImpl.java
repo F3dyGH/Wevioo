@@ -73,11 +73,11 @@ public class ReservationsServiceImpl implements ReservationsService {
         } else {
             Reservations reservation = new Reservations();
             reservation.setUser(user);
-            reservation.setFoodAndDrinks(foodAndDrinks);
+            reservation.setFood(foodAndDrinks);
             reservation.setDate(LocalDateTime.now());
             reservation.setReservationStatus(ReservationStatus.IN_PROCESS);
             reservation.setStaff(null);
-            notificationService.addNotificationToStaff(reservation.getUser().getFirstname() + " " + reservation.getUser().getLastname() + " has made a reservation for " + reservation.getFoodAndDrinks().getName());
+            notificationService.addNotificationToStaff(reservation.getUser().getFirstname() + " " + reservation.getUser().getLastname() + " has made a reservation for " + reservation.getFood().getName());
             return reservationsRepository.save(reservation);
         }
     }
@@ -116,7 +116,8 @@ public class ReservationsServiceImpl implements ReservationsService {
         if (LocalDateTime.now().isBefore(today6PM)) {
             LocalDateTime yesterday6PM = today.minusDays(1).withHour(18).withMinute(0);
             LocalDateTime today10AM = today.withHour(10).withMinute(0);
-            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today10AM);
+            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today6PM);
+//            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today10AM);
         } else {
             return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, today6PM, tomorrow10AM);
         }
@@ -129,8 +130,8 @@ public class ReservationsServiceImpl implements ReservationsService {
         Reservations reservation = reservationsRepository.findById(id).orElse(null);
         reservation.setReservationStatus(ReservationStatus.TREATED);
         reservation.setStaff(staff);
-        if (reservation.getFoodAndDrinks() != null) {
-            notificationService.addNotification("Your Reservation for " + reservation.getFoodAndDrinks().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
+        if (reservation.getFood() != null) {
+            notificationService.addNotification("Your Reservation for " + reservation.getFood().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
         }
         if (reservation.getMenu() != null) {
             notificationService.addNotification("Your Reservation for " + reservation.getMenu().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
@@ -148,8 +149,8 @@ public class ReservationsServiceImpl implements ReservationsService {
         if (user != null && user.getRoles().stream().anyMatch(role -> role.getName() == enumRole.ROLE_STAFF)) {
             reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservation.setStaff(user);
-            if (reservation.getFoodAndDrinks() != null) {
-                notificationService.addNotification("Your " + reservation.getFoodAndDrinks().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
+            if (reservation.getFood() != null) {
+                notificationService.addNotification("Your " + reservation.getFood().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
             }
             if (reservation.getMenu() != null) {
                 notificationService.addNotification("Your " + reservation.getMenu().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
@@ -160,7 +161,7 @@ public class ReservationsServiceImpl implements ReservationsService {
             /*if (reservation.getFoodAndDrinks() != null) {
                 notificationService.addNotification("Your Reservation has been cancelled", reservation.getUser());
             }*/
-            }
+        }
 
         return reservationsRepository.save(reservation);
     }

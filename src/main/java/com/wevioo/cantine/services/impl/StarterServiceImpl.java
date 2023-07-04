@@ -1,6 +1,7 @@
 package com.wevioo.cantine.services.impl;
 
 import com.wevioo.cantine.entities.Starter;
+import com.wevioo.cantine.repositories.ReservationsRepository;
 import com.wevioo.cantine.repositories.StarterRepository;
 import com.wevioo.cantine.services.IStarterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,15 @@ public class StarterServiceImpl implements IStarterService {
 
     @Autowired
     StarterRepository starterRepository;
+    @Autowired
+    private ReservationsRepository reservationsRepository;
 
     @Override
     public ResponseEntity<?> createDish(Starter starter, MultipartFile file) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             starter.setImage(photoBytes);
-        }else{
+        } else {
             starter.setImage(null);
         }
         starterRepository.save(starter);
@@ -58,6 +61,7 @@ public class StarterServiceImpl implements IStarterService {
 
     @Override
     public void deleteDish(Long idDish) {
+        reservationsRepository.deleteByStarterId(idDish);
         starterRepository.deleteById(idDish);
     }
 }

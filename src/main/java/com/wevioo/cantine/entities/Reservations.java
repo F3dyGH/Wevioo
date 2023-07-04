@@ -44,6 +44,5 @@ public class Reservations {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "food_and_drinks_id")
-    private FoodAndDrinks foodAndDrinks;
-
+    private FoodAndDrinks food;
 }

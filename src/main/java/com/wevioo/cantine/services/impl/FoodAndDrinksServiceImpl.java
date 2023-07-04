@@ -1,8 +1,10 @@
 package com.wevioo.cantine.services.impl;
 
 import com.wevioo.cantine.entities.FoodAndDrinks;
+import com.wevioo.cantine.entities.Reservations;
 import com.wevioo.cantine.enums.Categories;
 import com.wevioo.cantine.repositories.FoodAndDrinksRepository;
+import com.wevioo.cantine.repositories.ReservationsRepository;
 import com.wevioo.cantine.services.IFoodAndDrinksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
 
     @Autowired
     FoodAndDrinksRepository foodAndDrinksRepository;
+
+    @Autowired
+    ReservationsRepository reservationsRepository;
 
     @Override
     public FoodAndDrinks add(FoodAndDrinks foodAndDrinks, MultipartFile file) throws IOException {
@@ -79,7 +84,14 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
 
     @Override
     public void Delete(Long id) {
-        foodAndDrinksRepository.deleteById(id);
+        FoodAndDrinks foodAndDrinks = foodAndDrinksRepository.findById(id).orElse(null);
+        if (foodAndDrinks != null) {
+            List<Reservations> reservations = reservationsRepository.findByFood(foodAndDrinks);
+            for (Reservations reservation : reservations) {
+                reservationsRepository.delete(reservation);
+            }
+            foodAndDrinksRepository.delete(foodAndDrinks);
+        }
     }
 
     @Override

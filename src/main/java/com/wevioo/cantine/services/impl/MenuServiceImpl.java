@@ -5,6 +5,7 @@ import com.wevioo.cantine.entities.Dessert;
 import com.wevioo.cantine.entities.Menu;
 import com.wevioo.cantine.repositories.DessertRepository;
 import com.wevioo.cantine.repositories.MenuRepository;
+import com.wevioo.cantine.repositories.ReservationsRepository;
 import com.wevioo.cantine.services.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class MenuServiceImpl implements IMenuService {
     private DessertRepository dessertRepository;
     @Autowired
     private LocalDateConverter localDateConverter;
+    @Autowired
+    private ReservationsRepository reservationsRepository;
 
     @Override
     public Menu addMenu(Menu menu, MultipartFile file) throws IOException {
@@ -88,6 +91,7 @@ public class MenuServiceImpl implements IMenuService {
     public void deleteMenu(Long idMenu) {
         Menu menu = menuRepository.findById(idMenu).orElse(null);
         menuRepository.delete(menu);
+        reservationsRepository.deleteByMenuId(idMenu);
     }
 
     @Override

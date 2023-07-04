@@ -61,8 +61,6 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public List<Notifications> getNewNotificationsSince(LocalDateTime lastPollTimestamp) {
-        // Retrieve new notifications from the database based on the last poll timestamp
-        // Use the lastPollTimestamp to query for notifications that were created or updated after that timestamp
         List<Notifications> newNotifications = notificationsRepository.findNewNotificationsSince(lastPollTimestamp);
         return newNotifications;
     }
