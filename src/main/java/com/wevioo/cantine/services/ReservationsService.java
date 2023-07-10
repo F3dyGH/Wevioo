@@ -26,8 +26,6 @@ public interface ReservationsService {
 
         Reservations cancelReservation(Long id, Long staffId);
 
-        boolean hasReservation(User user);
-
         List<Reservations> getByUserToday(Long id);
 
         Map<LocalDate, List<Reservations>> getReservationsByUserId(Long userId);

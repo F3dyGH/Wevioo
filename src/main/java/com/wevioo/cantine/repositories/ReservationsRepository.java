@@ -3,6 +3,7 @@ package com.wevioo.cantine.repositories;
 import com.wevioo.cantine.entities.FoodAndDrinks;
 import com.wevioo.cantine.entities.Reservations;
 import com.wevioo.cantine.entities.User;
+import com.wevioo.cantine.enums.Categories;
 import com.wevioo.cantine.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,12 +28,8 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     List<Reservations> findByFood(FoodAndDrinks foodAndDrinks);
 
-   @Query("SELECT r FROM Reservations r WHERE r.date >= :yesterdayHour AND r.date <= :todayMaxHour AND r.reservationStatus = 'IN_PROCESS' ORDER BY r.date DESC")
-   List<Reservations> findReservationsBetweenYesterdayAndToday(LocalDateTime yesterdayHour, LocalDateTime todayMaxHour);
-
-   /* @Modifying
-    @Query("DELETE FROM Reservations r WHERE r.foodAndDrinks.id = :foodId")
-    void deleteByFoodId(Long foodId);*/
+    @Query("SELECT r FROM Reservations r WHERE r.date >= :yesterdayHour AND r.date <= :todayMaxHour AND r.reservationStatus = 'IN_PROCESS' ORDER BY r.date DESC")
+    List<Reservations> findReservationsBetweenYesterdayAndToday(LocalDateTime yesterdayHour, LocalDateTime todayMaxHour);
 
     @Modifying
     @Query("DELETE FROM Reservations r WHERE r.menu.id = :menuId")
@@ -50,4 +47,16 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
     List<Reservations> findByUserId(Long id);
 
     boolean existsByUserAndDateBetweenAndStarterIdIsNotNullAndReservationStatusIn(User user, LocalDateTime startDate, LocalDateTime endDate, ReservationStatus[] reservationStatuses);
+
+    Long countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(Categories categories, ReservationStatus reservationStatus, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    Long countByFoodIdNullAndReservationStatusAndDateBetween(ReservationStatus reservationStatus, LocalDateTime dateStart, LocalDateTime dateEnd);
+    Long countByDateBetween(LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    @Query("SELECT food.name, COUNT(*) FROM Reservations r JOIN r.food food WHERE r.reservationStatus = 'TREATED' GROUP BY food.name")
+    List<Object[]> getMealPopularity();
+
+    @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), COUNT(*) FROM Reservations r WHERE r.reservationStatus = 'TREATED' GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
+    List<Object[]> getMonthlyReservationCounts();
+
 }

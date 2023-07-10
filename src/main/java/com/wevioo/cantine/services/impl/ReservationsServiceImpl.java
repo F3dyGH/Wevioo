@@ -46,7 +46,7 @@ public class ReservationsServiceImpl implements ReservationsService {
 
         if (hasReservationYesterday || hasReservationToday) { //check this method tkhallikech treservi akther men mara fel intervalle mtaa l wakt ama hata ki tfout l wakt twally dima 400 error treservich chouf kifeh tkhallih tkhallik treservi baaed l wakt fel interval
             //ki tcancel commande soit staff soit user rao lezem taawed aandel l ha9 tecmandi akther men mara fel interval taa l wakt
-            throw new IllegalArgumentException("Menu reservation is allowed once a day");//update: after trying it still not working, should look for it another time
+            throw new IllegalArgumentException("Menu reservation is allowed once a day");
         }
 
         if (user.getRoles().contains(enumRole.ROLE_STAFF) || user.getRoles().contains(enumRole.ROLE_ADMIN)) {
@@ -164,18 +164,6 @@ public class ReservationsServiceImpl implements ReservationsService {
         }
 
         return reservationsRepository.save(reservation);
-    }
-
-    @Override
-    public boolean hasReservation(User user) {
-        List<Reservations> existingReservations = reservationsRepository.findAll();
-
-        for (Reservations reservation : existingReservations) {
-            if (reservation.getUser() == user) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

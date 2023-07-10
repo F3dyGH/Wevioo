@@ -174,4 +174,5 @@ public class ReservationsController {
         Map<LocalDate, List<Reservations>> res = dailyMenuReservationService.userFilterByStatus(idUser, status);
         return ResponseEntity.ok().body(res);
     }
+
 }
