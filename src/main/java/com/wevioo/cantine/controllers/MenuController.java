@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class MenuController {
     @Autowired
     private LocalDateConverter localDateConverter;
 
+    @PreAuthorize("hasRole('STAFF') ||" + " hasRole('ADMIN')")
     @PostMapping(value = "/create" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Menu> createMenu(@ModelAttribute Menu menu,
                                            @RequestParam(value = "photo", required = false) MultipartFile imageFile) throws IOException {
@@ -35,6 +37,7 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMenu);
     }
 
+    @PreAuthorize("hasRole('STAFF') ||" + " hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<Menu>> getAllMenus(){
 
@@ -42,12 +45,14 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(menus);
     }
 
+    @PreAuthorize("hasRole('STAFF') ||" + " hasRole('ADMIN')")
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @ModelAttribute Menu menu, @RequestParam(value = "photo", required = false) MultipartFile file) throws IOException {
         Menu updatedMenu = menuService.updateMenu(id,menu,file);
         return ResponseEntity.ok().body(updatedMenu);
     }
 
+    @PreAuthorize("hasRole('STAFF') ||" + " hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteMenu(@PathVariable Long id){
         menuService.deleteMenu(id);

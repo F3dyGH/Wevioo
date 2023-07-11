@@ -116,7 +116,7 @@ public class ReservationsController {
         }
     }
 
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasRole('STAFF')" + " || hasRole('ADMIN')")
     @GetMapping("/{status}")
     ResponseEntity<List<Reservations>> status(@PathVariable("status") ReservationStatus reservationStatus) {
         List<Reservations> reservationStatusList = dailyMenuReservationService.getByStatus(reservationStatus);
@@ -147,7 +147,7 @@ public class ReservationsController {
         return ResponseEntity.ok(historyList);
     }
 
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasRole('STAFF')" + " || hasRole('ADMIN')")
     @GetMapping("/today")
     ResponseEntity<List<Reservations>> todayDate() {
         List<Reservations> reservationStatusList = dailyMenuReservationService.getByTodayDate();

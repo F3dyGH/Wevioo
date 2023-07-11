@@ -50,13 +50,30 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
 
     Long countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(Categories categories, ReservationStatus reservationStatus, LocalDateTime dateStart, LocalDateTime dateEnd);
 
+    Long countByMenuIdNullAndFoodCategoriesAndDateBetween(Categories categories, LocalDateTime dateStart, LocalDateTime dateEnd);
+
     Long countByFoodIdNullAndReservationStatusAndDateBetween(ReservationStatus reservationStatus, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    Long countByFoodIdNullAndDateBetween(LocalDateTime dateStart, LocalDateTime dateEnd);
+
     Long countByDateBetween(LocalDateTime dateStart, LocalDateTime dateEnd);
 
-    @Query("SELECT food.name, COUNT(*) FROM Reservations r JOIN r.food food WHERE r.reservationStatus = 'TREATED' GROUP BY food.name")
+    @Query("SELECT food.name, COUNT(r) FROM Reservations r JOIN r.food food WHERE r.reservationStatus = 'TREATED' GROUP BY food.name")
     List<Object[]> getMealPopularity();
 
-    @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), COUNT(*) FROM Reservations r WHERE r.reservationStatus = 'TREATED' GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
+    @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), COUNT(r) FROM Reservations r WHERE r.reservationStatus = 'TREATED' GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
     List<Object[]> getMonthlyReservationCounts();
+
+    @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), SUM(r.menu.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
+    List<Object[]> getMonthlyMenuReservationsProfit();
+
+    @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), SUM(r.food.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' AND r.food.categories = :category GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
+    List<Object[]> getMonthlyFoodReservationsProfit(@Param("category") Categories categories);
+
+    @Query("SELECT SUM(r.menu.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED'")
+    Double calculateTodayMenuReservationProfitBetween(LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    @Query("SELECT SUM(r.food.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' AND r.food.categories = :category AND r.date >= :dateStart AND r.date <= :dateEnd")
+    Double calculateTodayFoodReservationProfitBetweenByCategories(@Param("category") Categories category, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);
 
 }
