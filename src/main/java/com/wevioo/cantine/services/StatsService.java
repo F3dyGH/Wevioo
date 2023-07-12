@@ -39,11 +39,19 @@ public interface StatsService {
 
     Double calculateTotalDailyMenuProfit();
 
+    Double calculateTotalYesterdayMenuProfit();
+
     Double calculateTotalDailyBreakfastProfit();
+
+    Double calculateTotalYesterdayBreakfastProfit();
 
     Double calculateTotalDailyDrinksProfit();
 
-    Map<String, Double> calculateMonthlyReservationsProfit();
+    Double calculateTotalYesterdayDrinksProfit();
+
+    List<Object[]> calculateMonthlyReservationsProfit();
+
+    Double calculateProfitPercentage();
 
     List<Object[]> a();
 }

@@ -53,6 +53,7 @@ public class StatsController {
     public Long countBreakfastTodayReservations() {
         return statsService.getBreakfastTodayReservationsCount();
     }
+
     @GetMapping("/reservations/breakfast/today/all")
     public Long countAllBreakfastTodayReservations() {
         return statsService.getAllBreakfastTodayReservationsCount();
@@ -94,31 +95,87 @@ public class StatsController {
     }
 
     @GetMapping("reservations/today/menu/profit")
-    public Double getTodayMenuReservationsProfit(){
-        return statsService.calculateTotalDailyMenuProfit();
-    }
+    public Double getTodayMenuReservationsProfit() {
+        Double profit = 0.0;
+        if (statsService.calculateTotalDailyMenuProfit() != null){
+            profit = statsService.calculateTotalDailyMenuProfit();
+        }
+        else {
+            profit = 0.0;
+        }
+        return profit;    }
 
     @GetMapping("reservations/today/breakfast/profit")
-    public Double getTodayBreakfastReservationsProfit(){
-        return statsService.calculateTotalDailyBreakfastProfit();
+    public Double getTodayBreakfastReservationsProfit() {
+        Double profit = 0.0;
+        if (statsService.calculateTotalDailyBreakfastProfit() != null){
+            profit = statsService.calculateTotalDailyBreakfastProfit();
+        }
+        else {
+            profit = 0.0;
+        }
+        return profit;
     }
 
     @GetMapping("reservations/today/drinks/profit")
-    public Double getTodayDrinksReservationsProfit(){
-        return statsService.calculateTotalDailyDrinksProfit();
+    public Double getTodayDrinksReservationsProfit() {
+        Double profit = 0.0;
+        if (statsService.calculateTotalDailyDrinksProfit() != null){
+            profit = statsService.calculateTotalDailyBreakfastProfit();
+        }
+        else {
+            profit = 0.0;
+        }
+        return profit;
     }
 
     @GetMapping("reservations/today/profit")
-    public Double getTodayReservationsProfit(){
+    public Double getTodayReservationsProfit() {
         Double drinksProfit = statsService.calculateTotalDailyDrinksProfit();
         Double breakfastProfit = statsService.calculateTotalDailyBreakfastProfit();
         Double menuProfits = statsService.calculateTotalDailyMenuProfit();
+        if (menuProfits == null) {
+            menuProfits = 0.0;
+        }
+        if (breakfastProfit == null) {
+            breakfastProfit = 0.0;
+        }
+        if (drinksProfit == null) {
+            drinksProfit = 0.0;
+        }
+        Double all = menuProfits + breakfastProfit + drinksProfit;
+        return all;
+    }
+
+    @GetMapping("reservations/yesterday/profit")
+    public Double getYesterdayReservationsProfit() {
+        Double drinksProfit = statsService.calculateTotalYesterdayDrinksProfit();
+        Double breakfastProfit = statsService.calculateTotalYesterdayBreakfastProfit();
+        Double menuProfits = statsService.calculateTotalYesterdayDrinksProfit();
+        if (menuProfits == null) {
+            menuProfits = 0.0;
+        }
+        if (breakfastProfit == null) {
+            breakfastProfit = 0.0;
+        }
+        if (drinksProfit == null) {
+            drinksProfit = 0.0;
+        }
         Double all = menuProfits + breakfastProfit + drinksProfit;
         return all;
     }
 
     @GetMapping("reservations/monthly/profit")
-    public Map<String, Double> getMonthlyReservationsProfit(){
+    public List<Object[]> getMonthlyReservationsProfit() {
         return statsService.calculateMonthlyReservationsProfit();
+    }
+
+    @GetMapping("reservations/profit/percentage")
+    public Double getProfitPercentage(){
+        return statsService.calculateProfitPercentage();
+    }
+    @GetMapping("/a")
+    public Double get(){
+        return statsService.calculateTotalYesterdayDrinksProfit();
     }
 }
