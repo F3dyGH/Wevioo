@@ -70,7 +70,7 @@ public class JwtResponse implements AuthApiResponse {
 
     @Override
     public void setMessage(String message) {
-
+        //Empty, there is nothing to implement
     }
 }
 
