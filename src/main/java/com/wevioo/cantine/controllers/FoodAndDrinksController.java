@@ -2,7 +2,6 @@ package com.wevioo.cantine.controllers;
 
 import com.wevioo.cantine.entities.FoodAndDrinks;
 import com.wevioo.cantine.enums.Categories;
-import com.wevioo.cantine.repositories.FoodAndDrinksRepository;
 import com.wevioo.cantine.services.IFoodAndDrinksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,7 @@ public class FoodAndDrinksController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
-        foodAndDrinksService.Delete(id);
+        foodAndDrinksService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -1,7 +1,7 @@
 package com.wevioo.cantine.services;
 
 import com.wevioo.cantine.entities.Menu;
-import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +21,7 @@ public interface IMenuService {
 
     Menu getMenuByName(String name);
 
+    @Transactional
     void deleteMenu(Long idMenu);
 
     List<Menu> getMenusForTomorrow();

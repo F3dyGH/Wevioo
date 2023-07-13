@@ -21,7 +21,7 @@ public class StarterController {
 
     @PreAuthorize("hasRole('STAFF') ||" + " hasRole('ADMIN')")
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addDish(@ModelAttribute Starter starter, @RequestParam(value = "photo", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<Starter> addDish(@ModelAttribute Starter starter, @RequestParam(value = "photo", required = false) MultipartFile file) throws IOException {
         return ResponseEntity.ok(iStarterService.createDish(starter, file));
     }
 

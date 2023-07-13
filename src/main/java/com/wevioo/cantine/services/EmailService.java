@@ -1,8 +1,5 @@
 package com.wevioo.cantine.services;
 
-
-import org.springframework.mail.SimpleMailMessage;
-
 import javax.mail.MessagingException;
 import java.io.IOException;
 

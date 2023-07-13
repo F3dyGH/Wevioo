@@ -17,13 +17,13 @@ public class UserManagementController {
 
     @GetMapping("/enabled-users")
 
-    public ResponseEntity<?> getAllEnabledUsers() {
+    public ResponseEntity<List<User>> getAllEnabledUsers() {
         List<User> users = userManagement.getAllEnabledUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/disabled-users")
-    public ResponseEntity<?> getAllDisabledUsers() {
+    public ResponseEntity<List<User>> getAllDisabledUsers() {
         List<User> users = userManagement.getAllDisabledUsers();
         return ResponseEntity.ok(users);
     }
@@ -44,7 +44,7 @@ public class UserManagementController {
     }
 
     @PutMapping("/disable/{id}")
-    public ResponseEntity<?> disableUser(@PathVariable Long id) {
+    public ResponseEntity<String> disableUser(@PathVariable Long id) {
         try {
             userManagement.disableUser(id);
             return ResponseEntity.ok().build();
@@ -54,7 +54,7 @@ public class UserManagementController {
     }
 
     @PutMapping("/enable/{id}")
-    public ResponseEntity<?> enableUser(@PathVariable Long id) {
+    public ResponseEntity<String> enableUser(@PathVariable Long id) {
         try {
             userManagement.enableUser(id);
             return ResponseEntity.ok().build();

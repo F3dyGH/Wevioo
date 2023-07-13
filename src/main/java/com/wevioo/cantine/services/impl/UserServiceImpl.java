@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private static final String UPLOAD_DIR = "uploads/users_photos/";
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired

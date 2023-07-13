@@ -19,10 +19,12 @@ public class StatsServiceImpl implements StatsService {
     @Autowired
     ReservationsRepository reservationsRepository;
 
+    String region = "Africa/Tunis";
+
     @Override
     public Long getDrinksTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(0).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).withHour(0).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).plusDays(1).withHour(0).withMinute(0);
         Categories category = Categories.drinks;
         ReservationStatus status = ReservationStatus.TREATED;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -30,8 +32,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getCancelledDrinksTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(0).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).withHour(0).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).plusDays(1).withHour(0).withMinute(0);
         Categories category = Categories.drinks;
         ReservationStatus status = ReservationStatus.CANCELLED;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -39,8 +41,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getPendingDrinksTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(0).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).withHour(0).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).plusDays(1).withHour(0).withMinute(0);
         Categories category = Categories.drinks;
         ReservationStatus status = ReservationStatus.IN_PROCESS;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -48,16 +50,16 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getAllDrinksTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(0).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).withHour(0).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).plusDays(1).withHour(0).withMinute(0);
         Categories category = Categories.drinks;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndDateBetween(category, start, end);
     }
 
     @Override
     public Long getBreakfastTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0).withSecond(0);
         Categories category = Categories.breakfast;
         ReservationStatus status = ReservationStatus.TREATED;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -65,8 +67,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getCancelledBreakfastTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0).withSecond(0);
         Categories category = Categories.breakfast;
         ReservationStatus status = ReservationStatus.CANCELLED;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -74,8 +76,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getPendingBreakfastTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0).withSecond(0);
         Categories category = Categories.breakfast;
         ReservationStatus status = ReservationStatus.IN_PROCESS;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -83,47 +85,47 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getAllBreakfastTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0).withSecond(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0).withSecond(0);
         Categories category = Categories.breakfast;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndDateBetween(category, start, end);
     }
 
     @Override
     public Long getMenuTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(10).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         ReservationStatus status = ReservationStatus.TREATED;
         return reservationsRepository.countByFoodIdNullAndReservationStatusAndDateBetween(status, start, end);
     }
 
     @Override
     public Long getAllMenuTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(10).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         return reservationsRepository.countByFoodIdNullAndDateBetween(start, end);
     }
 
     @Override
     public Long getCancelledMenuTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(10).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         ReservationStatus status = ReservationStatus.CANCELLED;
         return reservationsRepository.countByFoodIdNullAndReservationStatusAndDateBetween(status, start, end);
     }
 
     @Override
     public Long getPendingMenuTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(10).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         ReservationStatus status = ReservationStatus.IN_PROCESS;
         return reservationsRepository.countByFoodIdNullAndReservationStatusAndDateBetween(status, start, end);
     }
 
     @Override
     public Long getTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(10).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         return reservationsRepository.countByDateBetween(start, end);
     }
 
@@ -139,43 +141,43 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Double calculateTotalDailyMenuProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayMenuReservationProfitBetween(start, end);
     }
 
     @Override
     public Double calculateTotalYesterdayMenuProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(2).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(2).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayMenuReservationProfitBetween(start, end);
     }
 
     @Override
     public Double calculateTotalDailyBreakfastProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.breakfast, start, end);
     }
 
     @Override
     public Double calculateTotalYesterdayBreakfastProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(2).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(2).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.breakfast, start, end);
     }
 
     @Override
     public Double calculateTotalDailyDrinksProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.drinks, start, end);
     }
 
     @Override
     public Double calculateTotalYesterdayDrinksProfit() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(2).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(2).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
         return reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.drinks, start, end);
     }
 
@@ -237,10 +239,10 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public Double calculateProfitPercentage() {
 
-        LocalDateTime startToday = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime endToday = LocalDateTime.now(ZoneId.of("Africa/Tunis")).withHour(18).withMinute(0);
-        LocalDateTime startYesterday = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(2).withHour(18).withMinute(0);
-        LocalDateTime endYesterday = LocalDateTime.now(ZoneId.of("Africa/Tunis")).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime startToday = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime endToday = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
+        LocalDateTime startYesterday = LocalDateTime.now(ZoneId.of(region)).minusDays(2).withHour(18).withMinute(0);
+        LocalDateTime endYesterday = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
 
         Double todayDrinksProfit = reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.drinks, startToday, endToday);
         Double todayBreakfastProfit = reservationsRepository.calculateTodayFoodReservationProfitBetweenByCategories(Categories.breakfast, startToday, endToday);
@@ -279,13 +281,5 @@ public class StatsServiceImpl implements StatsService {
         }
 
         return 0.0;
-    }
-
-    @Override
-    public List<Object[]> a() {
-        List<Object[]> menuProfits = reservationsRepository.getMonthlyMenuReservationsProfit();
-        List<Object[]> breakfastProfits = reservationsRepository.getMonthlyFoodReservationsProfit(Categories.breakfast);
-        List<Object[]> drinksProfit = reservationsRepository.getMonthlyFoodReservationsProfit(Categories.drinks);
-        return drinksProfit;
     }
 }

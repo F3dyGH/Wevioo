@@ -1,7 +1,6 @@
 package com.wevioo.cantine.services.impl;
 
 import com.wevioo.cantine.entities.Dessert;
-import com.wevioo.cantine.entities.Starter;
 import com.wevioo.cantine.repositories.DessertRepository;
 import com.wevioo.cantine.repositories.MenuRepository;
 import com.wevioo.cantine.services.IDessertService;
@@ -20,35 +19,16 @@ public class DessertServiceImpl implements IDessertService {
     DessertRepository dessertRepository;
     @Autowired
     private MenuRepository menuRepository;
-  /*  @Override
-    public Dessert addDessert(Dessert dessert) {
-        return dessertRepository.save(dessert);
-    }
 
     @Override
-    public Dessert updateDessert(Dessert newDessert) {
-        Dessert dessert = dessertRepository.findById(newDessert.getId()).orElse(null);
-        if (dessert != null){
-            dessert.setDescription(newDessert.getDescription());
-            dessert.setName(newDessert.getName());
-            dessert.setPrice(newDessert.getPrice());
-            dessert.setPhoto(newDessert.getPhoto());
-            return dessertRepository.save(dessert);
-        }else {
-            return (Dessert) ResponseEntity.notFound();
-        }
-    }*/
-
-    @Override
-    public ResponseEntity<?> createDessert(Dessert dessert, MultipartFile file) throws IOException {
+    public Dessert createDessert(Dessert dessert, MultipartFile file) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             dessert.setImage(photoBytes);
         }else{
             dessert.setImage(null);
         }
-        dessertRepository.save(dessert);
-        return ResponseEntity.ok("Dessert created Successfully");
+        return dessertRepository.save(dessert);
 
     }
 

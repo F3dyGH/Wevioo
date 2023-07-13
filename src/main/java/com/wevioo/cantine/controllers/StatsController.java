@@ -2,15 +2,11 @@ package com.wevioo.cantine.controllers;
 
 import com.wevioo.cantine.services.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/stats")
@@ -96,7 +92,7 @@ public class StatsController {
 
     @GetMapping("reservations/today/menu/profit")
     public Double getTodayMenuReservationsProfit() {
-        Double profit = 0.0;
+        Double profit;
         if (statsService.calculateTotalDailyMenuProfit() != null){
             profit = statsService.calculateTotalDailyMenuProfit();
         }
@@ -107,7 +103,7 @@ public class StatsController {
 
     @GetMapping("reservations/today/breakfast/profit")
     public Double getTodayBreakfastReservationsProfit() {
-        Double profit = 0.0;
+        Double profit;
         if (statsService.calculateTotalDailyBreakfastProfit() != null){
             profit = statsService.calculateTotalDailyBreakfastProfit();
         }
@@ -119,9 +115,9 @@ public class StatsController {
 
     @GetMapping("reservations/today/drinks/profit")
     public Double getTodayDrinksReservationsProfit() {
-        Double profit = 0.0;
+        Double profit;
         if (statsService.calculateTotalDailyDrinksProfit() != null){
-            profit = statsService.calculateTotalDailyBreakfastProfit();
+            profit = statsService.calculateTotalDailyDrinksProfit();
         }
         else {
             profit = 0.0;
@@ -143,8 +139,8 @@ public class StatsController {
         if (drinksProfit == null) {
             drinksProfit = 0.0;
         }
-        Double all = menuProfits + breakfastProfit + drinksProfit;
-        return all;
+
+        return menuProfits + breakfastProfit + drinksProfit;
     }
 
     @GetMapping("reservations/yesterday/profit")
@@ -161,8 +157,8 @@ public class StatsController {
         if (drinksProfit == null) {
             drinksProfit = 0.0;
         }
-        Double all = menuProfits + breakfastProfit + drinksProfit;
-        return all;
+
+        return menuProfits + breakfastProfit + drinksProfit;
     }
 
     @GetMapping("reservations/monthly/profit")

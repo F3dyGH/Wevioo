@@ -1,13 +1,11 @@
 package com.wevioo.cantine.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,9 +31,5 @@ public class Starter {
     @Lob
     @Column(name = "image")
     private byte[] image;
-
-   /* @JsonIgnore
-    @ManyToMany(mappedBy = "starters")
-    private List<Menu> menus = new ArrayList<>();*/
 
 }

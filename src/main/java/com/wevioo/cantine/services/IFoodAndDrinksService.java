@@ -15,7 +15,7 @@ public interface IFoodAndDrinksService {
 
     List<FoodAndDrinks> getAll();
 
-    void Delete(Long id);
+    void delete(Long id);
 
     List<FoodAndDrinks> getByCategory(Categories categories);
     FoodAndDrinks getByName(String name);

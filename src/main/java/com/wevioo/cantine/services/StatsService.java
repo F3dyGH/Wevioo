@@ -1,9 +1,6 @@
 package com.wevioo.cantine.services;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface StatsService {
 
@@ -53,5 +50,4 @@ public interface StatsService {
 
     Double calculateProfitPercentage();
 
-    List<Object[]> a();
 }

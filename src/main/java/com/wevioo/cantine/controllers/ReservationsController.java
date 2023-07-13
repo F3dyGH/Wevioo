@@ -80,7 +80,7 @@ public class ReservationsController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/add")
-    ResponseEntity add(@RequestParam Long userId, @RequestParam Long itemId) {
+    ResponseEntity<Reservations> add(@RequestParam Long userId, @RequestParam Long itemId) {
         User user = userRepository.findById(userId).orElse(null);
         Optional<FoodAndDrinks> foodAndDrinksOptional = foodAndDrinksRepository.findById(itemId);
 
@@ -122,13 +122,6 @@ public class ReservationsController {
         List<Reservations> reservationStatusList = dailyMenuReservationService.getByStatus(reservationStatus);
         return ResponseEntity.ok().body(reservationStatusList);
     }
-
-    /*@PreAuthorize("hasRole('USER')")
-    @GetMapping("/user/{id}")
-    ResponseEntity<List<Reservations>> user(@PathVariable("id") Long id) {
-        List<Reservations> reservationList = dailyMenuReservationService.getByUser(id);
-        return ResponseEntity.ok().body(reservationList);
-    }*/
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/user/today/{userId}")

@@ -23,7 +23,7 @@ public class NotificationServiceImpl implements INotificationService {
     UserRepository userRepository;
 
     @Override
-    public void addNotification(String message, User user, String reservationStatus) {
+    public void addReservationNotification(String message, User user, String reservationStatus) {
         Notifications notification = new Notifications();
         notification.setMessage(message);
         notification.setUser(user);
@@ -34,11 +34,30 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     @Override
+    public void addNotification(String message) {
+        Notifications notification = new Notifications();
+        notification.setMessage(message);
+        notification.setDateTime(LocalDateTime.now(ZoneId.of("Africa/Tunis")));
+        notification.setSeen(false);
+        notificationsRepository.save(notification);
+    }
+
+    @Override
     public void addNotificationToStaff(String message) {
         List<User> staffUsers = userRepository.findAll();
         for (User staffUser : staffUsers) {
             if (staffUser.getRoles().stream().anyMatch(role -> role.getName() == enumRole.ROLE_STAFF)) {
-                addNotification(message, staffUser, "");
+                addReservationNotification(message, staffUser, "");
+            }
+        }
+    }
+
+    @Override
+    public void addNotificationToAdmin(String message) {
+        List<User> admins = userRepository.findAll();
+        for (User admin : admins) {
+            if (admin.getRoles().stream().anyMatch(role -> role.getName() == enumRole.ROLE_ADMIN)) {
+                addNotification(message);
             }
         }
     }
@@ -55,13 +74,6 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public List<Notifications> getNotificationsByUser(Long id) {
-        List<Notifications> notificationsList = notificationsRepository.findTop5ByUserIdOrderByDateTimeDesc(id);
-        return notificationsList;
-    }
-
-    @Override
-    public List<Notifications> getNewNotificationsSince(LocalDateTime lastPollTimestamp) {
-        List<Notifications> newNotifications = notificationsRepository.findNewNotificationsSince(lastPollTimestamp);
-        return newNotifications;
+        return notificationsRepository.findTop5ByUserIdOrderByDateTimeDesc(id);
     }
 }

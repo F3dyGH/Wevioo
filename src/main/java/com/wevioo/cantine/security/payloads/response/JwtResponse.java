@@ -1,7 +1,5 @@
 package com.wevioo.cantine.security.payloads.response;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.List;
 
 public class JwtResponse {

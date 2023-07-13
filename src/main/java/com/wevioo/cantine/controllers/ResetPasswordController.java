@@ -30,12 +30,12 @@ public class ResetPasswordController {
     @Autowired
     IUserService userService;
 
-    private final String TOKEN_URL ="http://localhost:4200/reset-password?token=";
+    private static final String TOKEN_URL ="http://localhost:4200/reset-password?token=";
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("/forgot-password/{email}")
-    public ResponseEntity<?> forgotPassword(@PathVariable("email") String email) {
+    public ResponseEntity<String> forgotPassword(@PathVariable("email") String email) {
         User user = userRepository.findByUsername(email).get();
 
         if (user == null) {
@@ -54,7 +54,7 @@ public class ResetPasswordController {
         return ResponseEntity.ok("Password reset email sent to: " + email);
     }
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String password){
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String password){
         User user = userRepository.findByResetToken(token).get();
         if (user.getResetToken().equals(token) && user.getResetTokenExpiration().isAfter(LocalDateTime.now()) ){
             userService.updatePassword(user,password);

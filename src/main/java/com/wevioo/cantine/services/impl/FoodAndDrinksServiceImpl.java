@@ -83,7 +83,7 @@ public class FoodAndDrinksServiceImpl implements IFoodAndDrinksService {
     }
 
     @Override
-    public void Delete(Long id) {
+    public void delete(Long id) {
         FoodAndDrinks foodAndDrinks = foodAndDrinksRepository.findById(id).orElse(null);
         if (foodAndDrinks != null) {
             List<Reservations> reservations = reservationsRepository.findByFood(foodAndDrinks);

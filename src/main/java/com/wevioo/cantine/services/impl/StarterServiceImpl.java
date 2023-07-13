@@ -21,15 +21,14 @@ public class StarterServiceImpl implements IStarterService {
     private ReservationsRepository reservationsRepository;
 
     @Override
-    public ResponseEntity<?> createDish(Starter starter, MultipartFile file) throws IOException {
+    public Starter createDish(Starter starter, MultipartFile file) throws IOException {
         if (file != null) {
             byte[] photoBytes = file.getBytes();
             starter.setImage(photoBytes);
         } else {
             starter.setImage(null);
         }
-        starterRepository.save(starter);
-        return ResponseEntity.ok("Starter created Successfully");
+       return starterRepository.save(starter);
     }
 
     @Override

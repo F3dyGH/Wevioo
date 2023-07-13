@@ -20,7 +20,6 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
     public LocalDateTime date(String source){
         LocalDateTime dateToGet = LocalDateTime.parse(source);
         LocalDateTime date = LocalDateTime.parse(dateToGet.toString().substring(0,9));
-        System.out.println(date);
         return date;
     }
 }

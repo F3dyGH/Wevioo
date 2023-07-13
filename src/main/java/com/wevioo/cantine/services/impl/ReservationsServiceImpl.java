@@ -40,12 +40,8 @@ public class ReservationsServiceImpl implements ReservationsService {
         boolean hasReservationYesterday = reservationsRepository.existsByUserAndDateBetweenAndStarterIdIsNotNullAndReservationStatusIn(user, startDateTime, endDateTime, reservationsStatus);
         boolean hasReservationToday = reservationsRepository.existsByUserAndDateBetweenAndStarterIdIsNotNullAndReservationStatusIn(user, startDateTimeToday, endDateTimeToday, reservationsStatus);
 
-        /*boolean hasCancelledReservation = reservationsRepository.existsByUserAndReservationStatusAndDateBetween(
-                user, ReservationStatus.CANCELLED, reservationStartDateTime, reservationEndDateTime
-        );*/
 
-        if (hasReservationYesterday || hasReservationToday) { //check this method tkhallikech treservi akther men mara fel intervalle mtaa l wakt ama hata ki tfout l wakt twally dima 400 error treservich chouf kifeh tkhallih tkhallik treservi baaed l wakt fel interval
-            //ki tcancel commande soit staff soit user rao lezem taawed aandel l ha9 tecmandi akther men mara fel interval taa l wakt
+        if (hasReservationYesterday || hasReservationToday) {
             throw new IllegalArgumentException("Menu reservation is allowed once a day");
         }
 
@@ -115,9 +111,7 @@ public class ReservationsServiceImpl implements ReservationsService {
 
         if (LocalDateTime.now().isBefore(today6PM)) {
             LocalDateTime yesterday6PM = today.minusDays(1).withHour(18).withMinute(0);
-            LocalDateTime today10AM = today.withHour(10).withMinute(0);
             return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today6PM);
-//            return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, yesterday6PM, today10AM);
         } else {
             return reservationsRepository.findByReservationStatusAndDateBetweenOrderByDateDesc(ReservationStatus.IN_PROCESS, today6PM, tomorrow10AM);
         }
@@ -131,14 +125,12 @@ public class ReservationsServiceImpl implements ReservationsService {
         reservation.setReservationStatus(ReservationStatus.TREATED);
         reservation.setStaff(staff);
         if (reservation.getFood() != null) {
-            notificationService.addNotification("Your Reservation for " + reservation.getFood().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
+            notificationService.addReservationNotification("Your Reservation for " + reservation.getFood().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
         }
         if (reservation.getMenu() != null) {
-            notificationService.addNotification("Your Reservation for " + reservation.getMenu().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
+            notificationService.addReservationNotification("Your Reservation for " + reservation.getMenu().getName() + " is ready", reservation.getUser(), reservation.getReservationStatus().toString());
         }
-        Reservations updatedReservation = reservationsRepository.save(reservation);
-
-        return updatedReservation;
+        return reservationsRepository.save(reservation);
     }
 
     @Override
@@ -150,17 +142,14 @@ public class ReservationsServiceImpl implements ReservationsService {
             reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservation.setStaff(user);
             if (reservation.getFood() != null) {
-                notificationService.addNotification("Your " + reservation.getFood().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
+                notificationService.addReservationNotification("Your " + reservation.getFood().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
             }
             if (reservation.getMenu() != null) {
-                notificationService.addNotification("Your " + reservation.getMenu().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
+                notificationService.addReservationNotification("Your " + reservation.getMenu().getName() + " reservation has been cancelled by the staff", reservation.getUser(), reservation.getReservationStatus().toString());
             }
         } else {
             reservation.setReservationStatus(ReservationStatus.CANCELLED);
             reservation.setStaff(null);
-            /*if (reservation.getFoodAndDrinks() != null) {
-                notificationService.addNotification("Your Reservation has been cancelled", reservation.getUser());
-            }*/
         }
 
         return reservationsRepository.save(reservation);
@@ -182,9 +171,9 @@ public class ReservationsServiceImpl implements ReservationsService {
             if (reservationDateTime.toLocalDate().equals(today) &&
                     reservationDateTime.isBefore(endDateTimeLimit)) {
                 reservationsToday.add(reservation);
+                reservationsToday.sort(Comparator.comparing(Reservations::getDate).reversed());
             }
         }
-        reservationsToday.sort(Comparator.comparing(Reservations::getDate).reversed());
         return reservationsToday;
     }
 

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IDessertService {
-    ResponseEntity<?> createDessert(Dessert dessert, MultipartFile file) throws IOException;
+    Dessert createDessert(Dessert dessert, MultipartFile file) throws IOException;
     Dessert updateDessert(Long id, Dessert newDessert, MultipartFile file) throws IOException;
     List<Dessert> getAll();
     Dessert retreiveDessert(Long idDessert);

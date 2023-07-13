@@ -28,8 +28,10 @@ public class CORSconfig implements Filter {
     }
     @Override
     public void destroy() {
+        //Empty
     }
     @Override
     public void init(FilterConfig config) throws ServletException {
+        //Empty
     }
 }
