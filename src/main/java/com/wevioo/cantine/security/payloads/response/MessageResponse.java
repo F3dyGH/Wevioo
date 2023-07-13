@@ -1,6 +1,6 @@
 package com.wevioo.cantine.security.payloads.response;
 
-public class MessageResponse {
+public class MessageResponse implements AuthApiResponse{
     private String message;
 
     public MessageResponse(String message) {

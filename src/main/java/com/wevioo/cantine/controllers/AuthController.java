@@ -8,6 +8,7 @@ import com.wevioo.cantine.repositories.UserRepository;
 import com.wevioo.cantine.security.jwt.JwtUtils;
 import com.wevioo.cantine.security.payloads.request.LoginRequest;
 import com.wevioo.cantine.security.payloads.request.SignupRequest;
+import com.wevioo.cantine.security.payloads.response.AuthApiResponse;
 import com.wevioo.cantine.security.payloads.response.JwtResponse;
 import com.wevioo.cantine.security.payloads.response.MessageResponse;
 import com.wevioo.cantine.security.services.UserDetailsImpl;
@@ -56,8 +57,10 @@ public class AuthController {
     @Autowired
     IUserService iUserService;
 
+    private static final String ROLE_NOT_FOUND = "Error: Role is not found.";
+
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthApiResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -81,11 +84,10 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username exists already!"));
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        Boolean usernameExists = userRepository.existsByUsername(signUpRequest.getUsername());
+        if (Boolean.TRUE.equals(usernameExists)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username exists already!"));
         }
 
         User user = new User(signUpRequest.getUsername(),
@@ -97,26 +99,26 @@ public class AuthController {
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(enumRole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(enumRole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND));
                         roles.add(adminRole);
 
                         break;
                     case "staff":
                         Role modRole = roleRepository.findByName(enumRole.ROLE_STAFF)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND));
                         roles.add(modRole);
 
                         break;
                     default:
                         Role userRole = roleRepository.findByName(enumRole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND));
                         roles.add(userRole);
                 }
             });

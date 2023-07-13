@@ -2,7 +2,7 @@ package com.wevioo.cantine.security.payloads.response;
 
 import java.util.List;
 
-public class JwtResponse {
+public class JwtResponse implements AuthApiResponse {
     private String token;
     private String type = "Bearer ";
     private Long id;
@@ -61,6 +61,16 @@ public class JwtResponse {
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
+    }
+
+    @Override
+    public void setMessage(String message) {
+
     }
 }
 
