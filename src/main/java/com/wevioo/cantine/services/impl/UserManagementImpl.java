@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -31,12 +32,21 @@ public class UserManagementImpl implements IUserManagement {
 
     @Override
     public User updateUserRole(Long idUser, Integer idRole) {
-        User user = ur.findById(idUser).get();
-        Role role = rr.findById(idRole).get();
-        Set<Role> roles = user.getRoles();
-        roles.clear();
-        roles.add(role);
-        return ur.save(user);
+        Optional<User> optionalUser = ur.findById(idUser);
+        Optional<Role> optionalRole = rr.findById(idRole);
+
+        if (optionalUser.isPresent() && optionalRole.isPresent()) {
+            User user = optionalUser.get();
+            Role role = optionalRole.get();
+
+            Set<Role> roles = user.getRoles();
+            roles.clear();
+            roles.add(role);
+
+            return ur.save(user);
+        } else {
+            throw new IllegalArgumentException("User or role not found");
+        }
     }
 
     @Override
@@ -46,13 +56,21 @@ public class UserManagementImpl implements IUserManagement {
 
     @Override
     public User getUserById(Long id) {
-        return ur.findById(id).get();
+        Optional<User> optionalUser = ur.findById(id);
+
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
     }
 
     @Override
     public void disableUser(Long userId) {
-        User user = ur.findById(userId).get();
-        if (user != null) {
+        Optional<User> optionalUser = ur.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             user.setIsEnabled(false);
             ur.save(user);
         } else {
@@ -62,12 +80,14 @@ public class UserManagementImpl implements IUserManagement {
 
     @Override
     public void enableUser(Long userId) {
-        User user = ur.findById(userId).get();
-        if (user != null) {
+        Optional<User> optionalUser = ur.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             user.setIsEnabled(true);
             ur.save(user);
         } else {
-            throw new IllegalArgumentException("User doesn't exist");
+            throw new IllegalArgumentException("User not found");
         }
     }
 }
