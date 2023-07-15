@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class CantineApplicationTests {
 
-   /* @Test
+    @Test
     void contextLoads() {
-    }*/
+    }
 
 }
