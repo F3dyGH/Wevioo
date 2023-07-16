@@ -42,10 +42,10 @@ pipeline {
 
         stage("SonarQube"){
             steps{
-                sh " mvn sonar:sonar \
-                    -Dsonar.projectKey=Wevioo-backend \
-                    -Dsonar.host.url=http://192.168.33.10:9000 \
-                    -Dsonar.login=1af186509f8912701b4d50e4325ed265f646c699"
+                sh "mvn sonar:sonar \
+                      -Dsonar.projectKey=Wevioo-backend \
+                      -Dsonar.host.url=http://192.168.33.10:9000 \
+                      -Dsonar.login=254c084fc103c43f4b2c14ad52eb378f5408f455"
             }
         }
     }
