@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "192.168.33.10:8081"
+        NEXUS_REPOSITORY = "maven-releases"
+    }
+
     stages{
         stage('Git'){
             steps {
