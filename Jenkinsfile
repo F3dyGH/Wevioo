@@ -121,7 +121,7 @@ pipeline {
                                     groupId: pom.groupId,
                                     version: pom.version,
                                     repository: NEXUS_REPOSITORY,
-                                    credentialsId: NEXUS_CREDENTIAL_ID,
+                                    credentialsId: "nexusPwd",
                                     artifacts: [
                                         // Artifact generated such as .jar, .ear and .war files.
                                         [artifactId: pom.artifactId,
