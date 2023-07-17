@@ -49,7 +49,7 @@ pipeline {
             }
         } */
 
-        stage("Publish to nexus") {
+        stage("Nexus Deploy") {
             steps {
                 script {
                          pom = readMavenPom file: "pom.xml";
@@ -66,7 +66,7 @@ pipeline {
                                 groupId: pom.groupId,
                                 version: pom.version,
                                 repository: "maven-releases",
-                                credentialsId: "83b06e01-00c6-42a8-a5f6-d9f9b7b7bc39",
+                                credentialsId: "nexusPwd",
                                 artifacts: [
                                    [
                                      artifactId: pom.artifactId,
