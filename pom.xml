@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.wevioo</groupId>
     <artifactId>cantine</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>cantine</name>
-    <description>cantine</description>
+    <version>1.0.0</version>
+    <name>Wevioo Food Reservations App</name>
+    <description>Food Reservations App</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
