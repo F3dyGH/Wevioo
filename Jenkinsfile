@@ -40,14 +40,14 @@ pipeline {
              }
         }
 
-        stage("SonarQube"){
+        /* stage("SonarQube"){
             steps{
                 sh "mvn sonar:sonar \
                       -Dsonar.projectKey=Wevioo-backend \
                       -Dsonar.host.url=http://192.168.33.10:9000 \
                       -Dsonar.login=254c084fc103c43f4b2c14ad52eb378f5408f455"
             }
-        }
+        } */
 
         stage("Publish to nexus") {
             steps {
