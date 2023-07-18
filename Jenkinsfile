@@ -113,7 +113,7 @@ pipeline {
                         pom = readMavenPom file: "pom.xml";
                        /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${NEXUS_USERNAME} ${NEXUS_PASSWORD} ${NEXUS_URL}'
 
-                            sh 'docker login -u ${NEXUS_USERNAME} -p ${NEXUS_PASSWORD} ${NEXUS_URL}'
+                            sh 'docker login -u ${NEXUS_USERNAME} -p ${NEXUS_PASSWORD}'
 //                         }
                             sh "docker push "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
                }
