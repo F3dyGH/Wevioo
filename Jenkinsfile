@@ -99,8 +99,8 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                        sh "docker build -t app:${pom.version} ."
-                        sh "docker tag app "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
+                        sh "sudo docker build -t app:${pom.version} ."
+                        sh "sudo docker tag app "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
                }
             }
         }
@@ -110,9 +110,9 @@ pipeline {
                script {
                         pom = readMavenPom file: "pom.xml";
                         withCredentials([string(credentialsId: 'nexusPwd')])  {
-                            sh 'docker login 'NEXUS_URL
+                            sh 'sudo docker login 'NEXUS_URL
                         }
-                            sh "docker push "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
+                            sh "sudo docker push "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
                }
             }
         }
