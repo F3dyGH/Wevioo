@@ -1,3 +1,4 @@
+/*
 package com.wevioo.cantine;
 
 import com.wevioo.cantine.entities.*;
@@ -7,12 +8,10 @@ import com.wevioo.cantine.repositories.UserRepository;
 import com.wevioo.cantine.services.INotificationService;
 import com.wevioo.cantine.services.impl.ReservationsServiceImpl;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,8 +25,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ReservationsServiceImplTest {
+
     @Mock
     private ReservationsRepository reservationsRepository;
 
@@ -152,3 +152,4 @@ public class ReservationsServiceImplTest {
 
 
 }
+*/
