@@ -94,5 +94,27 @@ pipeline {
                         }
                     }
                }
+
+        stage("Build Docker image") {
+            steps{
+               script {
+                        pom = readMavenPom file: "pom.xml";
+                        sh "docker build -t app:${pom.version} ."
+                        sh "docker tag app "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
+               }
+            }
+        }
+
+        stage("Publish image") {
+            steps{
+               script {
+                        pom = readMavenPom file: "pom.xml";
+                        withCredentials([string(credentialsId: 'nexusPwd')])  {
+                            sh 'docker login 'NEXUS_URL
+                        }
+                            sh "docker push "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
+               }
+            }
+        }
     }
 }
