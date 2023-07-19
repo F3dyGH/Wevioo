@@ -56,8 +56,8 @@ pipeline {
                       -Dsonar.host.url=http://192.168.33.10:9000 \
                       -Dsonar.login=254c084fc103c43f4b2c14ad52eb378f5408f455"
             }
-        }*/
-
+        }
+*/
         stage("publish to nexus") {
            steps {
                script {
