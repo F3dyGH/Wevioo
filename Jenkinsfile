@@ -101,7 +101,7 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                        sh "docker build -t app"
+                        sh "docker build -t app:${pom.version}"
                         sh "docker tag app ${NEXUS_URL}/docker-images/app:${pom.version}"
                }
             }
