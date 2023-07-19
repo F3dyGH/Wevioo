@@ -102,7 +102,7 @@ pipeline {
                script {
                         pom = readMavenPom file: "pom.xml";
                         sh "docker build -t app:${pom.version} ."
-                        sh "docker tag app:${pom.version} ${NEXUS_URL}/repository/docker-images/app:${pom.version}"
+                        sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
         }
@@ -116,7 +116,7 @@ pipeline {
 //                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
                             sh "echo POM VER : ${pom.version}"
-                            sh "docker push ${NEXUS_URL}/repository/docker-images/app:${pom.version}"
+                            sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
         }
