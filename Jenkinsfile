@@ -58,25 +58,10 @@ pipeline {
             }
         }
 
-        stage("publish to nexus") {
+        stage("publish artifact to nexus") {
            steps {
                script {
-
-                sh "ls -al" // Print the current directory contents for debugging
-                           sh "cat pom.xml" // Print the content of pom.xml for debugging
-                           pom = readMavenPom file: "pom.xml"
-
-                           if (pom == null) {
-                               error "Failed to read pom.xml"
-                           }
-
-                           echo "Maven Project Info:"
-                           echo " - GroupId: ${pom.groupId}"
-                           echo " - ArtifactId: ${pom.artifactId}"
-                           echo " - Version: ${pom.version}"
-                           echo " - Packaging: ${pom.packaging}"
-                           echo " - Name: ${pom.name}"
-                          pom = readMavenPom file: "pom.xml";
+                         pom = readMavenPom file: "pom.xml";
                          filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
                          echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                          artifactPath = filesByGlob[0].path;
@@ -122,17 +107,12 @@ pipeline {
             }
         }
 
-        stage("Publish image") {
+        stage("Publish docker image to nexus") {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                       /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */
-
-//                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
-//                         }
-                            sh "echo POM VER : ${pom.version}"
-                            sh "docker login -u admin -p admin 192.168.33.10:8082"
-                            sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
+                        sh "docker login -u admin -p admin 192.168.33.10:8082"
+                        sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
         }
