@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-     /*    stage ('Unit Test') {
+        stage ('Unit Test') {
              steps{
                  sh " mvn  test "
              }
@@ -95,7 +95,7 @@ pipeline {
                             }
                         }
                     }
-               } */
+               }
 
         stage("Build Docker image") {
             steps{
