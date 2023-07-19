@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-       /*  stage ('Unit Test') {
+     /*    stage ('Unit Test') {
              steps{
                  sh " mvn  test "
              }
@@ -101,7 +101,7 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                        sh "docker build -t app:${pom.version}"
+                        sh "docker build -t app:${pom.version} ."
                         sh "docker tag app ${NEXUS_URL}/docker-images/app:${pom.version}"
                }
             }
