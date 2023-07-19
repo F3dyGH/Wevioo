@@ -116,6 +116,7 @@ pipeline {
 //                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
                             sh "echo POM VER : ${pom.version}"
+                            sh "docker login -u admin -p admin 192.168.33.10:8082"
                             sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
