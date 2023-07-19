@@ -115,7 +115,7 @@ pipeline {
 
 //                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
-                            sh "docker push ${NEXUS_URL}/repository/docker-images/app:${pom.version}"
+                            sh "docker push ${NEXUS_URL}/repository/docker-images/app"
                }
             }
         }
