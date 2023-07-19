@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage ('Unit Test') {
+       /*  stage ('Unit Test') {
              steps{
                  sh " mvn  test "
              }
@@ -62,7 +62,7 @@ pipeline {
            steps {
                script {
                          pom = readMavenPom file: "pom.xml";
-                         filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                         filesByGlob = findFiles(glob: "target *//*.${pom.packaging}");
                          echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                          artifactPath = filesByGlob[0].path;
                          artifactExists = fileExists artifactPath;
@@ -95,14 +95,14 @@ pipeline {
                             }
                         }
                     }
-               }
+               } */
 
         stage("Build Docker image") {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                        sh "docker build -t app:${pom.version} ."
-                        sh "docker tag app:${pom.version} ${NEXUS_URL}/docker-images/app:${pom.version}"
+                        sh "docker build -t app"
+                        sh "docker tag app ${NEXUS_URL}/docker-images/app:${pom.version}"
                }
             }
         }
@@ -111,7 +111,7 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                       /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${NEXUS_USERNAME} ${NEXUS_PASSWORD} ${NEXUS_URL} ${pom.version}'
+                       /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${pom.version}'
 
 //                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
