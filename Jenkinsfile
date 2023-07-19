@@ -111,7 +111,7 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                       /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${NEXUS_USERNAME} ${NEXUS_PASSWORD} ${NEXUS_URL}'
+                       /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${NEXUS_USERNAME} ${NEXUS_PASSWORD} ${NEXUS_URL} ${pom.version}'
 
 //                             sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
