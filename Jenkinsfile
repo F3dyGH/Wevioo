@@ -101,7 +101,7 @@ pipeline {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
-                        sh "docker build app:${pom.version} ."
+                        sh "docker build -t app:${pom.version} ."
                         //sh "docker tag app:${pom.version}"
                }
             }
