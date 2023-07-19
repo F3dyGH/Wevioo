@@ -6,8 +6,8 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "192.168.33.10:8081"
         NEXUS_REPOSITORY = "maven-releases"
-        NEXUS_USERNAME = admin
-        NEXUS_PASSWORD = admin
+        NEXUS_USERNAME = "admin"
+        NEXUS_PASSWORD = "admin"
     }
 
     stages{
@@ -113,7 +113,7 @@ pipeline {
                         pom = readMavenPom file: "pom.xml";
                        /*  withCredentials([string(credentialsId: 'nexusPwd')])  { */                            sh ' echo ${NEXUS_USERNAME} ${NEXUS_PASSWORD} ${NEXUS_URL}'
 
-                            sh 'docker login -u ${NEXUS_USERNAME} -p ${NEXUS_PASSWORD} ${NEXUS_URL}'
+                            sh 'docker login -u admin -p admin ${NEXUS_URL}'
 //                         }
                             sh "docker push "NEXUS_PROTOCOL"/"NEXUS_URL"/"NEXUS_REPOSITORY":server"
                }
