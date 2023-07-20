@@ -70,8 +70,8 @@ public interface ReservationsRepository extends JpaRepository<Reservations, Long
     @Query("SELECT CONCAT(YEAR(r.date), '-', MONTH(r.date)), SUM(r.food.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' AND r.food.categories = :category GROUP BY CONCAT(YEAR(r.date), '-', MONTH(r.date)) ORDER BY MIN(r.date)")
     List<Object[]> getMonthlyFoodReservationsProfit(@Param("category") Categories categories);
 
-    @Query("SELECT SUM(r.menu.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED'")
-    Double calculateTodayMenuReservationProfitBetween(LocalDateTime dateStart, LocalDateTime dateEnd);
+    @Query("SELECT SUM(r.menu.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' AND r.date BETWEEN :start AND :end")
+    Double calculateTodayMenuReservationProfitBetween(@Param("start") LocalDateTime dateStart, @Param("end") LocalDateTime dateEnd);
 
     @Query("SELECT SUM(r.food.price) FROM Reservations r WHERE r.reservationStatus = 'TREATED' AND r.food.categories = :category AND r.date >= :dateStart AND r.date <= :dateEnd")
     Double calculateTodayFoodReservationProfitBetweenByCategories(@Param("category") Categories category, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd);

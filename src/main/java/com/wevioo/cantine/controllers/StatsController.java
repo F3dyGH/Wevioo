@@ -72,7 +72,7 @@ public class StatsController {
 
     @GetMapping("/reservations/menu/today/pending")
     public Long countPendingMenuTodayReservations() {
-        return statsService.getMenuTodayReservationsCount();
+        return statsService.getPendingMenuTodayReservationsCount();
     }
 
     @GetMapping("/reservations/today")

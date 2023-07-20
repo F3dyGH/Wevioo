@@ -23,8 +23,8 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Long getDrinksTodayReservationsCount() {
-        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).withHour(0).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
         Categories category = Categories.drinks;
         ReservationStatus status = ReservationStatus.TREATED;
         return reservationsRepository.countByMenuIdNullAndFoodCategoriesAndReservationStatusAndDateBetween(category, status, start, end);
@@ -142,7 +142,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public Double calculateTotalDailyMenuProfit() {
         LocalDateTime start = LocalDateTime.now(ZoneId.of(region)).minusDays(1).withHour(18).withMinute(0);
-        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(18).withMinute(0);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of(region)).withHour(10).withMinute(0);
         return reservationsRepository.calculateTodayMenuReservationProfitBetween(start, end);
     }
 
