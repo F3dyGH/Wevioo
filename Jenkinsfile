@@ -135,51 +135,44 @@ pipeline {
                         }
                     }
                 } */
-                stage("Build Docker image") {
-                                steps {
-                                    script {
-                                                            pom = readMavenPom file: "pom.xml";
-                                                            sh "docker build -t app:${pom.version} ."
-                                                            sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
-                                                   }
-                                }
-                            }
-stage("Publish Docker image to Nexus") {
-            steps {
-                script {
-                                        pom = readMavenPom file: "pom.xml";
-                                        sh "docker login -u admin -p admin 192.168.33.10:8082"
-                                        sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
-                               }
-            }
-        }
-stage("Extract Latest App Version") {
-            steps {
-                script {
-                    // Use the Nexus REST API to get the list of tags for your Docker image repository
+           stage("Build Docker image") {
+                steps {
+                    script {
+                                pom = readMavenPom file: "pom.xml";
+                                sh "docker build -t app:${pom.version} ."
+                                sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
+                    }
+                }
+           }
+
+           stage("Publish Docker image to Nexus") {
+               steps {
+                   script {
+                                pom = readMavenPom file: "pom.xml";
+                                sh "docker login -u admin -p admin 192.168.33.10:8082"
+                                sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
+                   }
+               }
+           }
+
+           stage("Extract Latest App Version") {
+               steps {
+                   script {
                     def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
                     def response = sh(returnStdout: true, script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} ${tagsUrl}")
                     def tagsJson = readJSON text: response
 
-                    // Extract the latest version from the tags list
                     def tags = tagsJson.items.collect { it.version.replace('app-', '') }
                     def latestVersion = tags.sort().reverse().head()
 
-                    // Set the APP_VERSION environment variable with the latest version
                     APP_VERSION = latestVersion
 
                     echo "Latest App Version: ${APP_VERSION}"
-                                        sh "sed -i 's/\${APP_VERSION}/${APP_VERSION}/g' docker-compose.yml"
+                    sh "sed -i 's/\${APP_VERSION}/${APP_VERSION}/g' docker-compose.yml"
 
-                }
-            }
-        }
-
-        // ... (rest of your stages)
-
-
-
-
+                   }
+               }
+           }
 
         stage("Run Docker Compose") {
             steps {
