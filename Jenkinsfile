@@ -8,7 +8,6 @@ pipeline {
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_USERNAME = "admin"
         NEXUS_PASSWORD = "admin"
-        APP_VERSION = ""
     }
 
     stages{
@@ -98,7 +97,7 @@ pipeline {
                     }
                }
 
-        /* stage("Build Docker image") {
+         stage("Build Docker image") {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
@@ -106,9 +105,9 @@ pipeline {
                         sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
-        } */
+        }
 
-       /*  stage("Publish docker image to nexus") {
+        stage("Publish docker image to nexus") {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
@@ -116,9 +115,9 @@ pipeline {
                         sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
-        } */
+        }
 
-         /*  stage("Extract Latest App Version") {
+        /* stage("Extract Latest App Version") {
                     steps {
                         script {
                             def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
@@ -128,16 +127,14 @@ pipeline {
                             def tags = tagsJson.items.collect { it.version.replace('app-', '') }
                             def latestVersion = tags.sort().reverse().head()
 
-                            env.APP_VERSION = latestVersion
 
                             echo "Latest App Version: ${latestVersion}"
-                            sh 'docker-compose up -d --build'
 
                         }
                     }
                 } */
 
-stage("Extract Latest App Version") {
+/* stage("Extract Latest App Version") {
             steps {
                 script {
                     // Use the Nexus REST API to get the list of tags for your Docker image repository
@@ -182,7 +179,7 @@ stage("Extract Latest App Version") {
                 }
             }
         }
-
+*/
         stage("Run Docker Compose") {
             steps {
                 sh "docker-compose -f docker-compose.yml up -d"
