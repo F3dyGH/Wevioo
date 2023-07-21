@@ -8,6 +8,7 @@ pipeline {
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_USERNAME = "admin"
         NEXUS_PASSWORD = "admin"
+        APP_VERSION = ""
     }
 
     stages{
@@ -116,6 +117,24 @@ pipeline {
                }
             }
         }
+
+          stage("Extract Latest App Version") {
+                    steps {
+                        script {
+                            def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&name=app"
+                            def response = sh(returnStdout: true, script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} ${tagsUrl}")
+                            def tagsJson = readJSON text: response
+
+                            def tags = tagsJson.items.collect { it.version.replace('app-', '') }
+                            def latestVersion = tags.sort().reverse().head()
+
+                            env.APP_VERSION = latestVersion
+
+                            echo "Latest App Version: ${latestVersion}"
+                        }
+                    }
+                }
+
         stage('Docker Compose') {
             steps {
                 sh 'docker-compose up -d --build'
