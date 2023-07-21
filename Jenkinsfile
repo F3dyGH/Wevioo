@@ -8,6 +8,7 @@ pipeline {
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_USERNAME = "admin"
         NEXUS_PASSWORD = "admin"
+        APP_VERSION = ""
     }
 
     stages{
@@ -134,7 +135,7 @@ pipeline {
                     }
                 } */
 
-/* stage("Extract Latest App Version") {
+ stage("Extract Latest App Version") {
             steps {
                 script {
                     // Use the Nexus REST API to get the list of tags for your Docker image repository
@@ -147,9 +148,9 @@ pipeline {
                     def latestVersion = tags.sort().reverse().head()
 
                     // Set the APP_VERSION environment variable with the latest version
-                    env.APP_VERSION = latestVersion
+                    APP_VERSION = latestVersion
 
-                    echo "Latest App Version: ${env.APP_VERSION}"
+                    echo "Latest App Version: ${APP_VERSION}"
                 }
             }
         }
@@ -179,7 +180,7 @@ pipeline {
                 }
             }
         }
-*/
+
         stage("Run Docker Compose") {
             steps {
                 sh "docker-compose -f docker-compose.yml up -d"
