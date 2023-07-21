@@ -163,7 +163,7 @@ stage("Extract Latest App Version") {
                 script {
                     pom = readMavenPom file: "pom.xml"
                     // Use the APP_VERSION environment variable to tag the Docker image
-                    def versionTag = APP_VERSION ?: 'latest' // Use 'latest' as a default if APP_VERSION is not set
+                    def versionTag = APP_VERSION ?: '${pom.version}' // Use 'latest' as a default if APP_VERSION is not set
                     sh "docker build -t app:${versionTag} ."
                     sh "docker tag app:${versionTag} 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
                 }
@@ -176,7 +176,7 @@ stage("Extract Latest App Version") {
                     pom = readMavenPom file: "pom.xml"
                     sh "docker login -u admin -p admin 192.168.33.10:8082"
                     // Use the APP_VERSION environment variable to push the Docker image
-                    def versionTag = APP_VERSION ?: 'latest' // Use 'latest' as a default if APP_VERSION is not set
+                    def versionTag = APP_VERSION ?: '${pom.version}' // Use 'latest' as a default if APP_VERSION is not set
                     sh "docker push 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
                 }
             }
