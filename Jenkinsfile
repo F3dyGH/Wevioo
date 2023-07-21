@@ -121,7 +121,7 @@ pipeline {
           stage("Extract Latest App Version") {
                     steps {
                         script {
-                            def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=${NEXUS_REPOSITORY}&name=app"
+                            def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
                             def response = sh(returnStdout: true, script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} ${tagsUrl}")
                             def tagsJson = readJSON text: response
 
