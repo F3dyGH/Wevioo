@@ -131,14 +131,12 @@ pipeline {
                             env.APP_VERSION = latestVersion
 
                             echo "Latest App Version: ${latestVersion}"
+                            sh 'docker-compose up -d --build'
+
                         }
                     }
                 }
 
-        stage('Docker Compose') {
-            steps {
-                sh 'docker-compose up -d --build'
-            }
-        }
+
     }
 }
