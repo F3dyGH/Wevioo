@@ -169,6 +169,8 @@ stage("Extract Latest App Version") {
                     APP_VERSION = latestVersion
 
                     echo "Latest App Version: ${APP_VERSION}"
+                                        sh "sed -i 's/\${APP_VERSION:-latest}/${env.APP_VERSION}/g' docker-compose.yml"
+
                 }
             }
         }
