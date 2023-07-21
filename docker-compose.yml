@@ -5,7 +5,7 @@ services:
     image: 192.168.33.10:8082/repository/docker-images/app:${APP_VERSION:-latest}
     container_name: app
     ports:
-      - "8082:8082"
+      - "8089:8089"
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
