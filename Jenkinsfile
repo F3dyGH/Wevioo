@@ -138,23 +138,19 @@ pipeline {
                 stage("Build Docker image") {
                                 steps {
                                     script {
-                                        pom = readMavenPom file: "pom.xml"
-                                        // Use the APP_VERSION environment variable to tag the Docker image
-                                        def versionTag = '${pom.version}' // Use 'latest' as a default if APP_VERSION is not set
-                                        sh "docker build -t app:${versionTag} ."
-                                        sh "docker tag app:${versionTag} 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
-                                    }
+                                                            pom = readMavenPom file: "pom.xml";
+                                                            sh "docker build -t app:${pom.version} ."
+                                                            sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
+                                                   }
                                 }
                             }
 stage("Publish Docker image to Nexus") {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml"
-                    sh "docker login -u admin -p admin 192.168.33.10:8082"
-                    // Use the APP_VERSION environment variable to push the Docker image
-                    def versionTag = '${pom.version}' // Use 'latest' as a default if APP_VERSION is not set
-                    sh "docker push 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
-                }
+                                        pom = readMavenPom file: "pom.xml";
+                                        sh "docker login -u admin -p admin 192.168.33.10:8082"
+                                        sh "docker push 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
+                               }
             }
         }
 stage("Extract Latest App Version") {
