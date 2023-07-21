@@ -98,7 +98,7 @@ pipeline {
                     }
                }
 
-        stage("Build Docker image") {
+       /*  stage("Build Docker image") {
             steps{
                script {
                         pom = readMavenPom file: "pom.xml";
@@ -106,7 +106,28 @@ pipeline {
                         sh "docker tag app:${pom.version} 192.168.33.10:8082/repository/docker-images/app:${pom.version}"
                }
             }
-        }
+        } */
+         stage("Build Docker image") {
+                    steps {
+                        script {
+                            pom = readMavenPom file: "pom.xml"
+                            // Use the APP_VERSION environment variable to tag the Docker image
+                            def versionTag = env.APP_VERSION ?: 'latest' // Use 'latest' as a default if APP_VERSION is not set
+                            sh "docker build -t app:${versionTag} ."
+                            sh "docker tag app:${versionTag} 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
+                        }
+                    }
+                } stage("Build Docker image") {
+                             steps {
+                                 script {
+                                     pom = readMavenPom file: "pom.xml"
+                                     // Use the APP_VERSION environment variable to tag the Docker image
+                                     def versionTag = env.APP_VERSION ?: 'latest' // Use 'latest' as a default if APP_VERSION is not set
+                                     sh "docker build -t app:${versionTag} ."
+                                     sh "docker tag app:${versionTag} 192.168.33.10:8082/repository/docker-images/app:${versionTag}"
+                                 }
+                             }
+                         }
 
         stage("Publish docker image to nexus") {
             steps{
@@ -118,7 +139,7 @@ pipeline {
             }
         }
 
-          stage("Extract Latest App Version") {
+          /* stage("Extract Latest App Version") {
                     steps {
                         script {
                             def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
@@ -135,8 +156,44 @@ pipeline {
 
                         }
                     }
-                }
+                } */
+    stage("Extract Latest App Version") {
+            steps {
+                script {
+                    // Use the Nexus REST API to get the list of tags for your Docker image repository
+                    def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
+                    def response = sh(returnStdout: true, script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} ${tagsUrl}")
+                    def tagsJson = readJSON text: response
 
+                    // Extract the latest version from the tags list
+                    def tags = tagsJson.items.collect { it.version.replace('app-', '') }
+                    def latestVersion = tags.sort().reverse().head()
+
+                    // Set the APP_VERSION environment variable with the latest version
+                    env.APP_VERSION = latestVersion
+
+                    echo "Latest App Version: ${env.APP_VERSION}"
+                }
+            }
+        }    stage("Extract Latest App Version") {
+                     steps {
+                         script {
+                             // Use the Nexus REST API to get the list of tags for your Docker image repository
+                             def tagsUrl = "${NEXUS_PROTOCOL}://${NEXUS_URL}/service/rest/v1/components?repository=docker-images&name=app"
+                             def response = sh(returnStdout: true, script: "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} ${tagsUrl}")
+                             def tagsJson = readJSON text: response
+
+                             // Extract the latest version from the tags list
+                             def tags = tagsJson.items.collect { it.version.replace('app-', '') }
+                             def latestVersion = tags.sort().reverse().head()
+
+                             // Set the APP_VERSION environment variable with the latest version
+                             env.APP_VERSION = latestVersion
+
+                             echo "Latest App Version: ${env.APP_VERSION}"
+                         }
+                     }
+                 }
 
     }
 }
