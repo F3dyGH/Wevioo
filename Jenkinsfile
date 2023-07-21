@@ -131,6 +131,7 @@ pipeline {
                             env.APP_VERSION = latestVersion
 
                             echo "Latest App Version: ${latestVersion}"
+                            echo "Latest App Version: ${APP_VERSION}"
                             sh 'docker-compose up -d --build'
 
                         }
