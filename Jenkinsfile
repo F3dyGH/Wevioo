@@ -8,7 +8,6 @@ pipeline {
         NEXUS_REPOSITORY = "maven-releases"
         NEXUS_USERNAME = "admin"
         NEXUS_PASSWORD = "admin"
-        APP_VERSION = ""
     }
 
     stages{
@@ -148,9 +147,9 @@ pipeline {
                     def latestVersion = tags.sort().reverse().head()
 
                     // Set the APP_VERSION environment variable with the latest version
-                    APP_VERSION = latestVersion
+                    env.APP_VERSION = latestVersion
 
-                    echo "Latest App Version: ${APP_VERSION}"
+                    echo "Latest App Version: ${env.APP_VERSION}"
                 }
             }
         }
